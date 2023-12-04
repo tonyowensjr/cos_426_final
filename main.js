@@ -44,3 +44,51 @@ function animate() {
 	renderer.render( scene, camera );
 }
 animate();
+
+let dragging = false;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onMouseDown(event) {
+    event.preventDefault();
+
+    // Calculate mouse position in normalized device coordinates (-1 to +1) for raycasting
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Raycasting to check if the mouse click intersects with the sphere
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(sphere);
+
+    if (intersects.length > 0) {
+        dragging = true;
+    }
+}
+
+function onMouseMove(event) {
+    event.preventDefault();
+
+    if (dragging) {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObject(sphere);
+
+        if (intersects.length > 0) {
+            const intersectPoint = intersects[0].point;
+            sphere.position.copy(intersectPoint);
+        }
+    }
+}
+
+function onMouseUp(event) {
+    event.preventDefault();
+    dragging = false;
+}
+
+// Event listeners for mouse interaction
+window.addEventListener('mousedown', onMouseDown, false);
+window.addEventListener('mousemove', onMouseMove, false);
+window.addEventListener('mouseup', onMouseUp, false);
