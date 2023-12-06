@@ -1,94 +1,108 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+// const renderer = new THREE.WebGLRenderer();
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
 
+// const birdGeometry = new THREE.SphereGeometry(1, 32, 32);
+// const birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+// const bird = new THREE.Mesh(birdGeometry, birdMaterial);
+// bird.position.set(-8, 0, -10); // Position the bird on the left side of the screen
+// scene.add(bird);
+
+// const pigMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// const pig = new THREE.Mesh(birdGeometry, pigMaterial);
+// pig.position.set(5, -2, -15);
+// scene.add(pig);
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const level = parseInt(urlParams.get('level')) || 1; // Default level is 1 if not specified in the URL
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls( camera, renderer.domElement );
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+let bird, pig; // Declare variables for bird and pig meshes
 
-const geometry = new THREE.SphereGeometry( 1, 32, 32 );
-console.log(geometry)
-// geometry.position.set( 0, 0, 0 );
-var tiger_material = [
-	new THREE.MeshBasicMaterial({
-	  map: new THREE.TextureLoader().load( "images/tiger_face.png")
-	}),
-	new THREE.MeshBasicMaterial({
-	  map: new THREE.TextureLoader().load( "images/tiger_face.png")
-	})
-  ];
+// Setup for different levels based on the 'level' variable
+if (level === 1) {
+    // Level 1 setup
+    const birdGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const birdMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    bird = new THREE.Mesh(birdGeometry, birdMaterial);
+    bird.position.set(-8, 0, -10); // Position the bird on the left side of the screen
+    scene.add(bird);
 
-// const material = new THREE.MeshBasicMaterial( { color: 0x0fff00 } );
-const sphere = new THREE.Mesh( geometry, tiger_material[0] );
-console.log(sphere.faces)
-// sphere[0].material = tiger_material[0];
-// sphere[1].material = tiger_material[1];
-sphere.position.set(1,0,-1);
-scene.add( sphere);
+    const pigMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const pigGeometry = new THREE.SphereGeometry(1, 32, 32);
+    pig = new THREE.Mesh(pigGeometry, pigMaterial);
+    pig.position.set(5, -2, -15);
+    scene.add(pig);
+    
 
-camera.position.z = 5;
-controls.update();
-
-function animate() {
-	requestAnimationFrame( animate );
-
-	sphere.rotation.x += 0.001;
-	sphere.rotation.y += 0.01;
-
-	renderer.render( scene, camera );
+} else if (level === 2) {
+   
+} else if (level === 3) {
+    
 }
-animate();
 
-let dragging = false;
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+let isDragging = false;
+let startPosition = new THREE.Vector3();
+let endPosition = new THREE.Vector3();
+let forceVector = new THREE.Vector3();
 
 function onMouseDown(event) {
     event.preventDefault();
-
-    // Calculate mouse position in normalized device coordinates (-1 to +1) for raycasting
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Raycasting to check if the mouse click intersects with the sphere
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(sphere);
-
-    if (intersects.length > 0) {
-        dragging = true;
-    }
+    isDragging = true;
+    startPosition.set(event.clientX, event.clientY, 0).unproject(camera);
+    endPosition.copy(startPosition);
 }
 
 function onMouseMove(event) {
     event.preventDefault();
-
-    if (dragging) {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-
-        const intersects = raycaster.intersectObject(sphere);
-
-        if (intersects.length > 0) {
-            const intersectPoint = intersects[0].point;
-            sphere.position.copy(intersectPoint);
-        }
+    if (isDragging) {
+        endPosition.set(event.clientX, event.clientY, 0).unproject(camera);
     }
 }
 
 function onMouseUp(event) {
     event.preventDefault();
-    dragging = false;
+    if (isDragging) {
+        isDragging = false;
+        forceVector = new THREE.Vector3().copy(startPosition).sub(endPosition).multiplyScalar(0.1);
+        animateShoot();
+    }
 }
 
-// Event listeners for mouse interaction
-window.addEventListener('mousedown', onMouseDown, false);
-window.addEventListener('mousemove', onMouseMove, false);
-window.addEventListener('mouseup', onMouseUp, false);
+function animateShoot() {
+    let shooting = true;
+    requestAnimationFrame(function shoot() {
+        if (shooting) {
+            bird.position.sub(forceVector);
+            forceVector.multiplyScalar(0.98);
+
+            if (forceVector.lengthSq() < 0.001) {
+                shooting = false;
+                bird.position.set(-8, 0, -10); // Reset bird position after shooting
+            }
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(shoot);
+        }
+    });
+}
+
+// Event listeners
+renderer.domElement.addEventListener('mousedown', onMouseDown, false);
+renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+renderer.domElement.addEventListener('mouseup', onMouseUp, false);
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
