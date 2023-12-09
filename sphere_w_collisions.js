@@ -94,6 +94,7 @@ function onMouseClick(event) {
     for (let intersect of intersects) {
         let selectedObject = intersect.object;
         if (selectedObject instanceof THREE.Mesh && selectedObject !== platformMesh) {
+            
             // Generate a random color
             const randomColor = new THREE.Color(Math.random() * 0xffffff);
 
