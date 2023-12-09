@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cannon": "^0.6.2",
     "save": "^2.9.0",
     "save-dev": "^0.0.1-security",
     "three": "^0.159.0",
