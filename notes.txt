@@ -13,3 +13,7 @@ its color. The next step will be determining the mechanic for shooting the tiger
 
 If you need to switch back to your html file just comment out line 13 in index.html and uncomment out line 12.
 
+
+Favicon found at this link:
+https://www.istockphoto.com/photo/angry-tiger-gm155730829-19377039
+
