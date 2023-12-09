@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 
 class DraggableSphere {
@@ -28,6 +29,51 @@ class DraggableSphere {
     }
 }
 
+let score = 0;
+let star_threshold = 500;
+let start_lives = 3;
+let lives = start_lives;
+
+// Time Display
+const timeDisplay = document.createElement('div');
+timeDisplay.id = 'timeDisplay';
+timeDisplay.style.position = 'absolute';
+timeDisplay.style.top = '75px';
+timeDisplay.style.right = '10px';
+timeDisplay.style.color = 'white';
+timeDisplay.style.zIndex = '10';
+timeDisplay.style.fontSize = '48px';
+timeDisplay.style.fontFamily = 'sans-serif';
+document.body.appendChild(timeDisplay);
+
+
+// Time Display
+const scoreDisplay = document.createElement('div');
+scoreDisplay.id = 'scoreDisplay';
+scoreDisplay.textContent = `Score: ${score}`;
+scoreDisplay.style.position = 'absolute';
+scoreDisplay.style.top = '10px';
+scoreDisplay.style.left = '10px';
+scoreDisplay.style.color = 'white';
+scoreDisplay.style.zIndex = '10';
+scoreDisplay.style.fontSize = '48px';
+scoreDisplay.style.fontFamily = 'sans-serif';
+document.body.appendChild(scoreDisplay);
+
+// Stars Display
+const starsDisplay = document.createElement('div');
+starsDisplay.id = 'starsDisplay';
+starsDisplay.textContent = `Stars: ${"★".repeat(score % star_threshold)}`;
+starsDisplay.style.position = 'absolute';
+starsDisplay.style.top = '75px';
+starsDisplay.style.left = '10px';
+starsDisplay.style.color = 'white';
+starsDisplay.style.zIndex = '10';
+starsDisplay.style.fontSize = '48px';
+starsDisplay.style.fontFamily = 'sans-serif';
+document.body.appendChild(starsDisplay);
+
+
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -54,7 +100,57 @@ for (let i = 0; i < numberOfSpheres; i++) {
     spheres.push(sphere);
 }
 
+// Display the number of spheres above the platform at a given time
+const livesRemaining = document.createElement('div');
+livesRemaining.id = 'livesRemaining';
+livesRemaining.style.position = 'absolute';
+livesRemaining.style.top = '10px';
+livesRemaining.style.right = '10px';
+livesRemaining.style.color = 'white';
+livesRemaining.style.zIndex = '10';
+livesRemaining.style.fontSize = '48px';
+livesRemaining.style.fontFamily = 'sans-serif';
+document.body.appendChild(livesRemaining);
 
+
+const startTime = Date.now();
+// function updateTimeDisplay() {
+//     const currentTime = Date.now();
+//     const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2); // Convert to seconds and round to 2 decimal places
+//     timeDisplay.textContent = 'Time: ' + elapsedTime + 's';
+// }
+
+// function updateLivesDisplay(newLives) {
+//     newLives = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
+//     lives = newLives;
+//     livesRemaining.textContent = `Spheres Remaining: ${newLives}`;
+// }
+
+// function updateScoreDisplay() {
+//     // const newScore = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
+//     let n_score = 500 * (3-lives);
+//     scoreDisplay.textContent = `Score: ${n_score}`;
+// }
+
+// function updateStarsDisplay() {
+//     starsDisplay.textContent = `Stars: ${"★".repeat(start_lives - lives)}`;
+// }
+
+function updateUI(){
+    const currentTime = Date.now();
+    const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2); // Convert to seconds and round to 2 decimal places
+    timeDisplay.textContent = 'Time: ' + elapsedTime + 's';
+
+    const newLives = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
+    lives = newLives;
+    livesRemaining.textContent = `Spheres Remaining: ${newLives}`;    
+
+    const n_score = 500 * (3-lives);
+    scoreDisplay.textContent = `Score: ${n_score}`;
+
+    starsDisplay.textContent = `Stars: ${"★".repeat(start_lives - lives)}`;
+
+}
 
 // Camera
 camera.position.z = 20;
@@ -131,8 +227,24 @@ function animate() {
     // Update each sphere's position and rotation
     spheres.forEach(sphere => sphere.update());
 
+    // // Update time display
+    // updateTimeDisplay();
+
+    // // Update lives display
+    // updateLivesDisplay();
+
+    // // Update score display
+    // updateScoreDisplay();
+
+    // // Update stars display
+    // updateStarsDisplay();
+    
+    // Update UI function made from above functions
+    updateUI();
+
     renderer.render(scene, camera);
     updateCamera();
+
 }
 
 animate();
