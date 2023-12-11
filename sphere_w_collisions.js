@@ -4,6 +4,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 
 class DraggableSphere {
+    // Add a method to shoot the sphere
+    shoot(force) {
+        this.body.applyImpulse(force, new CANNON.Vec3(0, 0, 0)); // Apply force to shoot the sphere
+    }
+
     constructor(scene, world, position = new THREE.Vector3(), radius = 1) {
         this.geometry = new THREE.SphereGeometry(radius, 32, 32);
         this.material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
@@ -175,6 +180,17 @@ world.addBody(platformBody);
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
+// shooting sphere movement vars
+let startPoint, endPoint; // Variables to store start and end points for slingshot effect
+let isMouseDown = false;
+
+let slingshotLine;
+let redSphere = null; // Variable to hold the red sphere
+let shootForce = 0; // Initial force set to zero
+const maxForce = 100; // Maximum force for shooting
+const forceIncrement = 2; // Rate of force increase per frame while mouse is held down
+let shootingDirection = new THREE.Vector3(); // Vector to store shooting direction
+
 function onMouseClick(event) {
     // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -205,8 +221,37 @@ function onMouseClick(event) {
 }
 
 
+// // for detection of strength/force the sphere should get shot by
+// function onMouseDown(event) {
+//     if (isMouseDown) return; // Ignore if already holding down the mouse
+
+//     isMouseDown = true;
+//     shootForce = 0; // Reset shoot force
+
+//     // Create the red sphere as a projectile
+//     redSphere = new DraggableSphere(scene, world, playerSphere.mesh.position.clone(), 0.5); // Change size as needed
+//     redSphere.mesh.material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
+
+//     visualizeTrajectory(); // Visualize trajectory initially
+// }
+// function onMouseUp(event) {
+//     if (isMouseDown) {
+//         isMouseDown = false;
+//         const force = shootingDirection.clone().normalize().multiplyScalar(shootForce); // Calculate force based on direction and shootForce
+//         redSphere.shoot(force); // Shoot the red sphere with the accumulated force
+//         shootForce = 0; // Reset shoot force
+
+//         if (trajectoryLine) {
+//             scene.remove(trajectoryLine); // Remove trajectory visualization
+//             trajectoryLine = null;
+//         }
+//     }
+// }
+
+
 // Event listeners
 window.addEventListener('mousedown', onMouseClick);
+
 
 
 // Ensure this function is called whenever the camera moves
@@ -241,9 +286,151 @@ function animate() {
     // Update UI function made from above functions
     updateUI();
 
+    // Calculate and visualize trajectory while mouse is down
+    if (isMouseDown) {
+        calculateShootingForceAndDirection();
+        visualizeTrajectory();
+    }
+    if (redSphere) {
+        redSphere.position.add(redSphere.velocity); // Update the red sphere's position based on its velocity
+        renderer.render(scene, camera);
+    }
+
     renderer.render(scene, camera);
     updateCamera();
 
 }
 
 animate();
+
+function calculateShootingForceAndDirection() {
+    // Calculate shooting direction based on the position of the mouse relative to the player's sphere
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Update shooting direction
+    shootingDirection.subVectors(raycaster.ray.direction, playerSphere.body.position).normalize();
+    
+    // Increment shoot force up to the maximum limit
+    if (shootForce < maxForce) {
+        shootForce += forceIncrement;
+    }
+}
+
+// attempting to show the trajectory of the shooting movement
+function visualizeTrajectory() {
+    if (!trajectoryLine) {
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 }); // Red color
+        const lineGeometry = new THREE.BufferGeometry();
+        const points = [];
+        const step = 0.1; // Change step size to adjust the trajectory accuracy
+
+        // Calculate points for the trajectory line of the red sphere
+        for (let i = 0; i <= 10; i++) {
+            const point = redSphere.mesh.position.clone().addScaledVector(shootingDirection, i * step * shootForce);
+            points.push(point.x, point.y, point.z);
+        }
+
+        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+        trajectoryLine = new THREE.Line(lineGeometry, lineMaterial);
+        scene.add(trajectoryLine);
+    } else {
+        // Update points for the trajectory line of the red sphere
+        const positions = trajectoryLine.geometry.attributes.position.array;
+
+        for (let i = 0; i <= 10; i++) {
+            const point = redSphere.mesh.position.clone().addScaledVector(shootingDirection, i * step * shootForce);
+            positions[i * 3] = point.x;
+            positions[i * 3 + 1] = point.y;
+            positions[i * 3 + 2] = point.z;
+        }
+
+        trajectoryLine.geometry.attributes.position.needsUpdate = true;
+    }
+}
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+function createRedSphere(position, radius) {
+    const geometry = new THREE.SphereGeometry(radius, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
+    const redSphere = new THREE.Mesh(geometry, material);
+    redSphere.position.copy(position);
+    scene.add(redSphere);
+    return redSphere;
+}
+
+window.addEventListener('mousedown', onMouseDown);
+window.addEventListener('mousemove', onMouseMove);
+window.addEventListener('mouseup', onMouseUp);
+
+function onMouseDown(event) {
+    if (!isMouseDown) {
+        isMouseDown = true;
+        startPoint = new THREE.Vector3(event.clientX, event.clientY, 0);
+    }
+}
+
+function onMouseMove(event) {
+    if (isMouseDown) {
+        endPoint = new THREE.Vector3(event.clientX, event.clientY, 0);
+        visualizeSlingshot();
+    }
+}
+
+function onMouseUp(event) {
+    if (isMouseDown) {
+        isMouseDown = false;
+        endPoint = new THREE.Vector3(event.clientX, event.clientY, 0);
+
+        const force = calculateForce();
+        shootRedSphere(force);
+
+        startPoint = null;
+        endPoint = null;
+        clearSlingshot();
+    }
+}
+
+function calculateForce() {
+    const distance = endPoint.distanceTo(startPoint);
+    const maxForce = 50; // Adjust this value according to your scene
+    const minForce = 10; // Adjust this value according to your scene
+    const clampedDistance = Math.min(Math.max(distance, 0), maxForce);
+    return (clampedDistance / maxForce) * (maxForce - minForce) + minForce;
+}
+
+function visualizeSlingshot() {
+    const slingshotMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const slingshotPoints = [new THREE.Vector3(startPoint.x, startPoint.y, 0), new THREE.Vector3(endPoint.x, endPoint.y, 0)];
+    const slingshotGeometry = new THREE.BufferGeometry().setFromPoints(slingshotPoints);
+
+    if (slingshotLine) {
+        scene.remove(slingshotLine);
+    }
+
+    slingshotLine = new THREE.Line(slingshotGeometry, slingshotMaterial);
+    scene.add(slingshotLine);
+}
+
+function clearSlingshot() {
+    if (slingshotLine) {
+        scene.remove(slingshotLine);
+        slingshotLine = null;
+    }
+}
+
+function shootRedSphere(force) {
+    if (redSphere) {
+        scene.remove(redSphere);
+    }
+
+    redSphere = createRedSphere(new THREE.Vector3(0, 0, 0), /* Set your red sphere radius */);
+    const direction = new THREE.Vector3(endPoint.x - startPoint.x, endPoint.y - startPoint.y, 0).normalize();
+    redSphere.velocity = direction.multiplyScalar(force); // Assign velocity based on the direction and force
+
+    animate();
+}
+
