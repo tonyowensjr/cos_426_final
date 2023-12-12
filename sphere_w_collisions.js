@@ -28,10 +28,16 @@ class DraggableSphere {
     }
 }
 
+// important variables
+const shootingBalls = [];
+let power = 0;
 let score = 0;
 let star_threshold = 500;
+
 let start_lives = 3;
 let lives = start_lives;
+let isShootMode = true;
+let viewerModeDict = {true: "Shoot Mode",false: "Drag Mode"};
 
 // Time Display
 const timeDisplay = document.createElement('div');
@@ -44,7 +50,6 @@ timeDisplay.style.zIndex = '10';
 timeDisplay.style.fontSize = '48px';
 timeDisplay.style.fontFamily = 'sans-serif';
 document.body.appendChild(timeDisplay);
-
 
 // Time Display
 const scoreDisplay = document.createElement('div');
@@ -72,6 +77,31 @@ starsDisplay.style.fontSize = '48px';
 starsDisplay.style.fontFamily = 'sans-serif';
 document.body.appendChild(starsDisplay);
 
+// View Mode Display
+const viewMode = document.createElement('div');
+viewMode.id = 'viewMode';
+viewMode.textContent = `View Mode: ${viewerModeDict[isShootMode]}`;
+viewMode.style.position = 'absolute';
+viewMode.style.top = '140px';
+viewMode.style.left = '10px';
+viewMode.style.color = 'white';
+viewMode.style.zIndex = '10';
+viewMode.style.fontSize = '48px';
+viewMode.style.fontFamily = 'sans-serif';
+document.body.appendChild(viewMode);
+
+// Power Display
+const powerDisplay = document.createElement('div');
+powerDisplay.id = 'powerDisplay';
+powerDisplay.textContent = 'Power: 0';
+powerDisplay.style.position = 'absolute';
+powerDisplay.style.top = '140px';
+powerDisplay.style.right = '10px';
+powerDisplay.style.color = 'white';
+powerDisplay.style.zIndex = '10';
+powerDisplay.style.fontSize = '48px';
+powerDisplay.style.fontFamily = 'sans-serif';
+document.body.appendChild(powerDisplay);
 
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
@@ -91,10 +121,25 @@ world.solver.iterations = 10;
 
 // Create multiple spheres with physics
 const spheres = [];
-const numberOfSpheres = 3;
+let numberOfSpheres= 8;
 
+// Calculate spacing between spheres
+let platformSize = 20;
+const platformTopSurfaceY = -2;
+let sphereRadius = 1;
+const spacing = platformSize / (numberOfSpheres + 1);
+const additionalClearance = 1;
+const safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
+
+
+// Create multiple spheres with physics
 for (let i = 0; i < numberOfSpheres; i++) {
-    const position = new THREE.Vector3((Math.random() * 4) - 2, (Math.random() * 4) + 2, (Math.random() * 4) - 2);
+    // Position spheres in a line or grid within the platform bounds
+    const xPosition = -platformSize / 2 + spacing * (i + 1);
+    const yPosition = safeHeightAbovePlatform;
+    const zPosition = Math.random() * platformSize -  platformSize/2; // Centered along the z-axis, adjust as needed
+
+    const position = new THREE.Vector3(xPosition, yPosition, zPosition);
     const sphere = new DraggableSphere(scene, world, position);
     spheres.push(sphere);
 }
@@ -110,31 +155,10 @@ livesRemaining.style.zIndex = '10';
 livesRemaining.style.fontSize = '48px';
 livesRemaining.style.fontFamily = 'sans-serif';
 document.body.appendChild(livesRemaining);
-
-
+ 
 const startTime = Date.now();
-// function updateTimeDisplay() {
-//     const currentTime = Date.now();
-//     const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2); // Convert to seconds and round to 2 decimal places
-//     timeDisplay.textContent = 'Time: ' + elapsedTime + 's';
-// }
 
-// function updateLivesDisplay(newLives) {
-//     newLives = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
-//     lives = newLives;
-//     livesRemaining.textContent = `Spheres Remaining: ${newLives}`;
-// }
-
-// function updateScoreDisplay() {
-//     // const newScore = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
-//     let n_score = 500 * (3-lives);
-//     scoreDisplay.textContent = `Score: ${n_score}`;
-// }
-
-// function updateStarsDisplay() {
-//     starsDisplay.textContent = `Stars: ${"★".repeat(start_lives - lives)}`;
-// }
-
+// Update UI
 function updateUI(){
     const currentTime = Date.now();
     const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2); // Convert to seconds and round to 2 decimal places
@@ -144,10 +168,10 @@ function updateUI(){
     lives = newLives;
     livesRemaining.textContent = `Spheres Remaining: ${newLives}`;    
 
-    const n_score = 500 * (3-lives);
+    const n_score = 500 * (numberOfSpheres-lives);
     scoreDisplay.textContent = `Score: ${n_score}`;
 
-    starsDisplay.textContent = `Stars: ${"★".repeat(start_lives - lives)}`;
+    starsDisplay.textContent = `Stars: ${"★".repeat(numberOfSpheres - lives)}`;
 
 }
 
@@ -155,10 +179,10 @@ function updateUI(){
 camera.position.z = 20;
 
 // Create a platform in Three.js
-const platformGeometry = new THREE.BoxGeometry(20, 1, 20);
+const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
 const platformMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 });
 const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
-platformMesh.position.set(0, -2, 0);
+platformMesh.position.set(0, platformTopSurfaceY, 0);
 scene.add(platformMesh);
 
 // Create a static physics body for the platform in Cannon.js
@@ -173,41 +197,108 @@ world.addBody(platformBody);
 
 // Raycaster for mouse interaction
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
 
-function onMouseClick(event) {
-    // Calculate mouse position in normalized device coordinates (-1 to +1) for both components
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// Create a shooting ball
+function createShootingBall(radius, position, material) {
+    // Three.js Mesh for the Shooting Ball
+    const geometry = new THREE.SphereGeometry(radius, 32, 32);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.copy(position);
+    scene.add(mesh);
 
-    // Update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
+    // Cannon.js Physics Body for the Shooting Ball
+    const shape = new CANNON.Sphere(radius);
+    const body = new CANNON.Body({
+        mass: 5, // You might want a different mass for the shooting ball
+        position: new CANNON.Vec3(position.x, position.y, position.z),
+        shape: shape
+    });
+    world.addBody(body);
 
-    // Calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects(scene.children,true);
-
-    for (let intersect of intersects) {
-        let selectedObject = intersect.object;
-        if (selectedObject instanceof THREE.Mesh && selectedObject !== platformMesh) {
-            
-            // Generate a random color
-            const randomColor = new THREE.Color(Math.random() * 0xffffff);
-
-            // Apply the random color to the selected object
-            selectedObject.material.color = randomColor;
-
-            // Log the new color to the console
-            console.log("new color:", "#" + randomColor.getHexString());
-
-            break; // Assuming you want to pick the first intersected object
-        }
-    }
+    return { mesh, body };
 }
 
+// Calculate the force to apply to the shooting ball
+function calculatePower(holdDuration) {
+    const maxPower = 500; // Maximum power
+    const powerPerMillisecond = 0.1; // Power increase per millisecond
+    power = Math.min(holdDuration * powerPerMillisecond, maxPower);
+    return power; // Cap the power to a maximum value
+}
 
-// Event listeners
-window.addEventListener('mousedown', onMouseClick);
+// Shoot a ball from the camera
+function shootBallAtTarget(mouseEvent,power) {
+    if (!isShootMode) return;
 
+    const mouse = new THREE.Vector2(
+        (mouseEvent.clientX / window.innerWidth) * 2 - 1,
+        -(mouseEvent.clientY / window.innerHeight) * 2 + 1
+    );
+
+    raycaster.setFromCamera(mouse, camera);
+
+    // Assuming the shooting ball starts near the camera
+    const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+    const direction = new THREE.Vector3();
+    raycaster.ray.direction.normalize();
+    direction.copy(raycaster.ray.direction);
+
+    // Apply force based on calculated power
+    shootingBall.body.applyImpulse(new CANNON.Vec3(direction.x * power, direction.y * power, direction.z * power), shootingBall.body.position);
+
+    shootingBalls.push(shootingBall); // Add the new ball to the array
+}
+
+// Switch between drag and shoot mode
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'L' || event.key === 'l') {
+        isShootMode = !isShootMode;
+        viewMode.textContent = `View Mode: ${viewerModeDict[isShootMode]}`;
+    }
+});
+
+// Mouse events
+let mouseDownTime = 0;
+let powerUpdateInterval = null;
+
+// Start updating the power display when the mouse is pressed
+window.addEventListener('mousedown', () => {
+    if (isShootMode) {
+        mouseDownTime = Date.now();
+
+        // Clear any existing interval
+        if (powerUpdateInterval) {
+            clearInterval(powerUpdateInterval);
+        }
+
+        // Start a new interval to update the power display
+        powerUpdateInterval = setInterval(() => {
+            const currentDuration = Date.now() - mouseDownTime;
+            const currentPower = calculatePower(currentDuration);
+            powerDisplay.textContent = 'Power: ' + Math.round(currentPower.toFixed(2));
+        }, 100); // Update every 100 milliseconds
+    }
+});
+
+// Start the power calculation when the mouse is pressed
+window.addEventListener('mousedown', () => {
+    if (isShootMode) {
+        mouseDownTime = Date.now(); // Record the time when mouse is pressed
+    }
+});
+
+// Shoot the ball when the mouse is released
+window.addEventListener('mouseup', (event) => {
+    if (isShootMode) {
+        clearInterval(powerUpdateInterval); // Stop updating the power display
+        const mouseUpTime = Date.now();
+        const holdDuration = mouseUpTime - mouseDownTime; // Calculate hold duration
+        const power = calculatePower(holdDuration); // Calculate force based on duration
+        console.log("Shooting",holdDuration,power)
+        shootBallAtTarget(event, power);
+        powerDisplay.textContent = 'Power: ' + Math.round(power.toFixed(2)); // Show final power
+    }
+});
 
 // Ensure this function is called whenever the camera moves
 function updateCamera() {
@@ -224,20 +315,16 @@ function animate() {
     world.step(1 / 60);
 
     // Update each sphere's position and rotation
-    spheres.forEach(sphere => sphere.update());
+    spheres.forEach(sphere => {
+        sphere.mesh.position.copy(sphere.body.position);
+        sphere.mesh.quaternion.copy(sphere.body.quaternion);
+    });
+    // Update shooting balls
+    shootingBalls.forEach(ball => {
+        ball.mesh.position.copy(ball.body.position);
+        ball.mesh.quaternion.copy(ball.body.quaternion);
+    });
 
-    // // Update time display
-    // updateTimeDisplay();
-
-    // // Update lives display
-    // updateLivesDisplay();
-
-    // // Update score display
-    // updateScoreDisplay();
-
-    // // Update stars display
-    // updateStarsDisplay();
-    
     // Update UI function made from above functions
     updateUI();
 
