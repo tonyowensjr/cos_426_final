@@ -1,0 +1,31 @@
+/* Adding styles for the start screen elements */
+.start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+}
+
+.level-buttons {
+    margin-top: 20px;
+}
+
+.levelButton {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 18px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.levelButton:hover {
+    background-color: #2980b9;
+}
