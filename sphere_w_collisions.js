@@ -14,7 +14,7 @@ class DraggableSphere {
         // Cannon.js physics body
         const shape = new CANNON.Sphere(radius);
         this.body = new CANNON.Body({
-            mass: 1, // Set mass > 0 for dynamic bodies
+            mass: 5, // Set mass > 0 for dynamic bodies
             position: new CANNON.Vec3(position.x, position.y, position.z),
             shape: shape
         });
@@ -221,9 +221,16 @@ function createShootingBall(radius, position, material) {
 // Calculate the force to apply to the shooting ball
 function calculatePower(holdDuration) {
     const maxPower = 500; // Maximum power
-    const powerPerMillisecond = 0.1; // Power increase per millisecond
-    power = Math.min(holdDuration * powerPerMillisecond, maxPower);
-    return power; // Cap the power to a maximum value
+    const cycleDuration = 2000; // Duration of a full power cycle (up and down) in milliseconds
+
+    // Calculate the current phase in the cycle
+    const phase = (holdDuration % cycleDuration) / cycleDuration;
+    const sinValue = Math.sin(phase * Math.PI); // Sine value oscillates between 0 and 1
+
+    // Adjust power based on sine wave, oscillating between 0 and maxPower
+    power = sinValue * maxPower;
+
+    return power;
 }
 
 // Shoot a ball from the camera
