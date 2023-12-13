@@ -9,9 +9,9 @@ let power = 0;
 let score = 0;
 let star_threshold = 500;
 
-let start_lives = 3;
-let lives = start_lives;
+let lives = 5;
 let isShootMode = true;
+let outOfLives = false;
 let viewerModeDict = {true: "Shoot Mode",false: "Drag Mode"};
 
 // Time Display
@@ -20,7 +20,7 @@ timeDisplay.id = 'timeDisplay';
 timeDisplay.style.position = 'absolute';
 timeDisplay.style.top = '75px';
 timeDisplay.style.right = '10px';
-timeDisplay.style.color = 'white';
+timeDisplay.style.color = 'black';
 timeDisplay.style.zIndex = '10';
 timeDisplay.style.fontSize = '48px';
 timeDisplay.style.fontFamily = 'sans-serif';
@@ -33,7 +33,7 @@ scoreDisplay.textContent = `Score: ${score}`;
 scoreDisplay.style.position = 'absolute';
 scoreDisplay.style.top = '10px';
 scoreDisplay.style.left = '10px';
-scoreDisplay.style.color = 'white';
+scoreDisplay.style.color = 'black';
 scoreDisplay.style.zIndex = '10';
 scoreDisplay.style.fontSize = '48px';
 scoreDisplay.style.fontFamily = 'sans-serif';
@@ -46,7 +46,7 @@ starsDisplay.textContent = `Stars: ${"★".repeat(score % star_threshold)}`;
 starsDisplay.style.position = 'absolute';
 starsDisplay.style.top = '75px';
 starsDisplay.style.left = '10px';
-starsDisplay.style.color = 'white';
+starsDisplay.style.color = 'black';
 starsDisplay.style.zIndex = '10';
 starsDisplay.style.fontSize = '48px';
 starsDisplay.style.fontFamily = 'sans-serif';
@@ -59,11 +59,23 @@ viewMode.textContent = `View Mode: ${viewerModeDict[isShootMode]}`;
 viewMode.style.position = 'absolute';
 viewMode.style.top = '140px';
 viewMode.style.left = '10px';
-viewMode.style.color = 'white';
+viewMode.style.color = 'black';
 viewMode.style.zIndex = '10';
 viewMode.style.fontSize = '48px';
 viewMode.style.fontFamily = 'sans-serif';
 document.body.appendChild(viewMode);
+
+const livesDisplay = document.createElement('div');
+livesDisplay.id = 'livesDisplay';
+livesDisplay.textContent = `Tigers: ${lives}`;
+livesDisplay.style.position = 'absolute';
+livesDisplay.style.top = '205px';
+livesDisplay.style.left = '10px';
+livesDisplay.style.color = 'black';
+livesDisplay.style.zIndex = '10';
+livesDisplay.style.fontSize = '48px';
+livesDisplay.style.fontFamily = 'sans-serif';
+document.body.appendChild(livesDisplay);
 
 // Power Display
 const powerDisplay = document.createElement('div');
@@ -72,7 +84,7 @@ powerDisplay.textContent = 'Power: 0';
 powerDisplay.style.position = 'absolute';
 powerDisplay.style.top = '140px';
 powerDisplay.style.right = '10px';
-powerDisplay.style.color = 'white';
+powerDisplay.style.color = 'black';
 powerDisplay.style.zIndex = '10';
 powerDisplay.style.fontSize = '48px';
 powerDisplay.style.fontFamily = 'sans-serif';
@@ -101,7 +113,7 @@ world.solver.iterations = 10;
 
 // Create multiple spheres with physics
 const spheres = [];
-let numberOfSpheres= 8;
+let numberOfSpheres= 4;
 
 // Calculate spacing between spheres
 let platformSize = 20;
@@ -111,60 +123,85 @@ const spacing = platformSize / (numberOfSpheres + 1);
 const additionalClearance = 1;
 const safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
 
+let position = new THREE.Vector3(5, safeHeightAbovePlatform, -(platformSize/3));
+let sphere = new BrownBear(scene, world, position);
+let newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+sphere.body.position.y = newYposition
+spheres.push(sphere);
 
-// Create multiple spheres with physics
-for (let i = 0; i < numberOfSpheres; i++) {
-    // Position spheres in a line or grid within the platform bounds
-    const xPosition = -platformSize / 2 + spacing * (i + 1);
-    const yPosition = safeHeightAbovePlatform;
-    const zPosition = Math.random() * platformSize -  platformSize/2; // Centered along the z-axis, adjust as needed
 
-    const position = new THREE.Vector3(xPosition, yPosition, zPosition);
-    let rand_num = Math.random() * 100;
-    if (rand_num < 16){
-        const sphere = new YaleBullDogs(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    } else if (rand_num < 33){
-        const sphere = new CornellBears(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    } else if (rand_num < 50){
-        const sphere = new BrownBear(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    } else if (rand_num < 66){
-        const sphere = new DartmouthD(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    } else if (rand_num < 83){
-        const sphere = new UPennQuaker(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    } else {
-        const sphere = new ColumbiaLions(scene, world, position);
-        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-        sphere.body.position.y = newYposition
-        spheres.push(sphere);
-    }
-}
+position = new THREE.Vector3(-(platformSize/4), safeHeightAbovePlatform, platformSize/3);
+sphere = new DartmouthD(scene, world, position);
+newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+sphere.body.position.y = newYposition
+spheres.push(sphere);
+
+position = new THREE.Vector3((platformSize/4), safeHeightAbovePlatform, platformSize/5);
+sphere = new YaleBullDogs(scene, world, position);
+newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+sphere.body.position.y = newYposition
+spheres.push(sphere);
+
+position = new THREE.Vector3((-platformSize/4), safeHeightAbovePlatform, -platformSize/5);
+sphere = new UPennQuaker(scene, world, position);
+newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+sphere.body.position.y = newYposition
+spheres.push(sphere);
+
+
+// // Create multiple spheres with physics
+// for (let i = 0; i < numberOfSpheres; i++) {
+//     // Position spheres in a line or grid within the platform bounds
+//     const xPosition = -platformSize / 2 + spacing * (i + 1);
+//     const yPosition = safeHeightAbovePlatform;
+//     const zPosition = Math.random() * platformSize -  platformSize/2; // Centered along the z-axis, adjust as needed
+
+//     const position = new THREE.Vector3(xPosition, yPosition, zPosition);
+//     let rand_num = Math.random() * 100;
+//     if (rand_num < 16){
+//         const sphere = new YaleBullDogs(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     } else if (rand_num < 33){
+//         const sphere = new CornellBears(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     } else if (rand_num < 50){
+//         const sphere = new BrownBear(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     } else if (rand_num < 66){
+//         const sphere = new DartmouthD(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     } else if (rand_num < 83){
+//         const sphere = new UPennQuaker(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     } else {
+//         const sphere = new ColumbiaLions(scene, world, position);
+//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+//         sphere.body.position.y = newYposition
+//         spheres.push(sphere);
+//     }
+// }
 
 // Display the number of spheres above the platform at a given time
-const livesRemaining = document.createElement('div');
-livesRemaining.id = 'livesRemaining';
-livesRemaining.style.position = 'absolute';
-livesRemaining.style.top = '10px';
-livesRemaining.style.right = '10px';
-livesRemaining.style.color = 'white';
-livesRemaining.style.zIndex = '10';
-livesRemaining.style.fontSize = '48px';
-livesRemaining.style.fontFamily = 'sans-serif';
-document.body.appendChild(livesRemaining);
+const spheresRemaining = document.createElement('div');
+spheresRemaining.id = 'spheresRemaining';
+spheresRemaining.style.position = 'absolute';
+spheresRemaining.style.top = '10px';
+spheresRemaining.style.right = '10px';
+spheresRemaining.style.color = 'black';
+spheresRemaining.style.zIndex = '10';
+spheresRemaining.style.fontSize = '48px';
+spheresRemaining.style.fontFamily = 'sans-serif';
+document.body.appendChild(spheresRemaining);
  
 const startTime = Date.now();
 
@@ -174,14 +211,15 @@ function updateUI(){
     const elapsedTime = ((currentTime - startTime) / 1000).toFixed(2); // Convert to seconds and round to 2 decimal places
     timeDisplay.textContent = 'Time: ' + elapsedTime + 's';
 
-    const newLives = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
-    lives = newLives;
-    livesRemaining.textContent = `Spheres Remaining: ${newLives}`;    
+    const enemiesLeft = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
+    spheresRemaining.textContent = `Enemies Remaining: ${enemiesLeft}`;    
 
-    const n_score = 500 * (numberOfSpheres-lives);
+    const n_score = 500 * (numberOfSpheres-enemiesLeft);
     scoreDisplay.textContent = `Score: ${n_score}`;
 
-    starsDisplay.textContent = `Stars: ${"★".repeat(numberOfSpheres - lives)}`;
+    starsDisplay.textContent = `Stars: ${"★".repeat(numberOfSpheres - enemiesLeft)}`;
+
+    livesDisplay.textContent = `Tigers: ${lives}`;
 
 }
 
@@ -236,12 +274,13 @@ function createShootingBall(radius, position, material) {
 
 // Example: Loading a texture image
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('/Users/harpreetkaur/Documents/cos_426_final/images/tiger_face.png'); // Replace with your image path
+const texture = textureLoader.load('images/tiger_face.png'); // Replace with your image path
 
 
 
 // Calculate the force to apply to the shooting ball
 function calculatePower(holdDuration) {
+    if (outOfLives) return 0;
     const maxPower = 500; // Maximum power
     const cycleDuration = 2000; // Duration of a full power cycle (up and down) in milliseconds
 
@@ -256,7 +295,7 @@ function calculatePower(holdDuration) {
 }
 
 // Shoot a ball from the camera
-function shootBallAtTarget(mouseEvent,power, texture) {
+function shootBallAtTarget(mouseEvent, power, texture) {
     if (!isShootMode) return;
 
     const mouse = new THREE.Vector2(
@@ -268,9 +307,9 @@ function shootBallAtTarget(mouseEvent,power, texture) {
 
     // Assuming the shooting ball starts near the camera
     const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0xffa500 }));
-   // Usage: Pass the texture to the createShootingBall function
+    // Usage: Pass the texture to the createShootingBall function
     //const shootingBall = createShootingBall(1, camera.position.clone(), texture);
-   const direction = new THREE.Vector3();
+    const direction = new THREE.Vector3();
     raycaster.ray.direction.normalize();
     direction.copy(raycaster.ray.direction);
 
@@ -278,6 +317,7 @@ function shootBallAtTarget(mouseEvent,power, texture) {
     shootingBall.body.applyImpulse(new CANNON.Vec3(direction.x * power, direction.y * power, direction.z * power), shootingBall.body.position);
 
     shootingBalls.push(shootingBall); // Add the new ball to the array
+    lives -= 1;
 }
 
 // Switch between drag and shoot mode
@@ -292,8 +332,7 @@ window.addEventListener('keydown', (event) => {
 let mouseDownTime = 0;
 let powerUpdateInterval = null;
 
-// Start updating the power display when the mouse is pressed
-window.addEventListener('mousedown', () => {
+function shootBall() {
     if (isShootMode) {
         mouseDownTime = Date.now();
 
@@ -309,7 +348,10 @@ window.addEventListener('mousedown', () => {
             powerDisplay.textContent = 'Power: ' + Math.round(currentPower.toFixed(2));
         }, 100); // Update every 100 milliseconds
     }
-});
+}
+
+// Start updating the power display when the mouse is pressed
+window.addEventListener('mousedown',shootBall);
 
 // Start the power calculation when the mouse is pressed
 window.addEventListener('mousedown', () => {
@@ -320,12 +362,11 @@ window.addEventListener('mousedown', () => {
 
 // Shoot the ball when the mouse is released
 window.addEventListener('mouseup', (event) => {
-    if (isShootMode) {
+    if (isShootMode && !outOfLives) {
         clearInterval(powerUpdateInterval); // Stop updating the power display
         const mouseUpTime = Date.now();
         const holdDuration = mouseUpTime - mouseDownTime; // Calculate hold duration
         const power = calculatePower(holdDuration); // Calculate force based on duration
-        console.log("Shooting",holdDuration,power)
         shootBallAtTarget(event, power);
         powerDisplay.textContent = 'Power: ' + Math.round(power.toFixed(2)); // Show final power
     }
@@ -361,7 +402,23 @@ function animate() {
 
     renderer.render(scene, camera);
     updateCamera();
+    let remainingFoes = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length
+    if (remainingFoes == 0){
+        setTimeout(function(){document.getElementById('winnerMenu').style.display = 'block';}, 1000);
+    }
 
+    // this checks if lives are over and waits for 4 seconds before displaying the game over menu
+    // the wait is since to ensure that the remainingFoes has not gone to zero before the lives menu shows up
+    if (lives <= 0){
+        outOfLives = true;
+        setTimeout(function(){
+            remainingFoes = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length
+            if (remainingFoes > 0) {
+                document.getElementById('gameOverMenu').style.display = 'block';
+            } 
+        }, 4000);
+
+    }
 }
 
 animate();

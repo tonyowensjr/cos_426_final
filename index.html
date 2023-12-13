@@ -9,18 +9,51 @@
 	</head>
 
 	 <!-- Start Screen -->
-	 <div id="startScreen" class="start-screen">
+	 <!-- <div id="startScreen" class="start-screen">
         <h1>Welcome to Angry Tigers!</h1>
-        <div class="level-buttons">
-            <button class="levelButton" data-level="level1">Level 1</button>
+        <div class="level-buttons"> -->
+            <!-- <button class="levelButton" data-level="level1">Level 1</button>
             <button class="levelButton" data-level="level2">Level 2</button>
-			<button class="levelButton" data-level="level3">Level 3</button>
+			<button class="levelButton" data-level="level3">Level 3</button> -->
             
-        </div>
-    </div>
+        <!-- </div> -->
+    <!-- </div> -->
 
     <!-- Your Game Canvas -->
-    <canvas id="gameCanvas"></canvas>
+    <!-- <canvas id="gameCanvas"></canvas> -->
+	<div id="popupMenu" style="display:none;text-align: center; position:fixed; top:5%; left:50%; transform:translateX(-50%); background-color:rgb(89, 96, 230); border:1px solid black; padding:10px; border-radius:10px; font-family: 'Arial', sans-serif;">
+		<h2>Pause Menu</h2>
+		<h2><a href="." style = "text-align: center;">Retry</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 1</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 2</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 3</a></h2>
+		<!-- Add more links as needed -->
+	</div>
+	<div id="gameOverMenu" style="display:none;text-align: center; position:fixed; top:5%; left:50%; transform:translateX(-50%); background-color:rgb(89, 96, 230); border:1px solid black; padding:10px; border-radius:10px; font-family: 'Arial', sans-serif;">
+		<h2>GAME OVER</h2>
+		<h2><a href="." style = "text-align: center;">Retry</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 1</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 2</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 3</a></h2>
+		<!-- Add more links as needed -->
+	</div>
+
+	<div id="winnerMenu" style="display:none;text-align: center; position:fixed; top:5%; left:50%; transform:translateX(-50%); background-color:rgb(89, 96, 230); border:1px solid black; padding:10px; border-radius:10px; font-family: 'Arial', sans-serif;">
+		<h2>YOU WIN!!</h2>
+		<h2><a href="." style = "text-align: center;">Retry</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 1</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 2</a></h2>
+		<h2><a href="." style = "text-align: center;">Level 3</a></h2>
+		<!-- Add more links as needed -->
+	</div>
+	<script>
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				var popupMenu = document.getElementById('popupMenu');
+				popupMenu.style.display = (popupMenu.style.display === 'none') ? 'block' : 'none';
+			}
+		});
+	</script>
 
 	
 	<body>

@@ -29,3 +29,8 @@
 .levelButton:hover {
     background-color: #2980b9;
 }
+
+.popupMenu{
+    color: rgb(0, 0, 0);
+    top: 50%;
+}
