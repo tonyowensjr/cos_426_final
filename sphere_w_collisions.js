@@ -203,6 +203,12 @@ function createShootingBall(radius, position, material) {
         position: new CANNON.Vec3(position.x, position.y, position.z),
         shape: shape
     });
+
+    const loader = new THREE.TextureLoader();
+    loader.load('school_logos/princeton_logo.jpeg', (texture) => {
+        mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+    });
+
     world.addBody(body);
 
     return { mesh, body };
@@ -235,7 +241,7 @@ function shootBallAtTarget(mouseEvent,power) {
     raycaster.setFromCamera(mouse, camera);
 
     // Assuming the shooting ball starts near the camera
-    const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+    const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0xffa500 }));
     const direction = new THREE.Vector3();
     raycaster.ray.direction.normalize();
     direction.copy(raycaster.ray.direction);

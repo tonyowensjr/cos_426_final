@@ -5,7 +5,7 @@ export class GenericSphere {
     constructor(scene, world, position = new THREE.Vector3(), radius = 1) {
         // Three.js mesh
         this.geometry = new THREE.SphereGeometry(radius, 32, 32);
-        this.material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+        this.material = new THREE.MeshBasicMaterial({ color: 0x000000 });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.position.copy(position);
         scene.add(this.mesh);

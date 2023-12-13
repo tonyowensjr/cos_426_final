@@ -1,4 +1,4 @@
-// subdir/DerivedClass.js
+import * as THREE from 'three';
 import { GenericSphere } from './generalSphere.js';
 
 export class YaleBullDogs extends GenericSphere {
@@ -8,6 +8,10 @@ export class YaleBullDogs extends GenericSphere {
 
         super(scene, world, position, radius);
 
+        const loader = new THREE.TextureLoader();
+        loader.load('school_logos/yale_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
         // Update the mass
         this.body.mass = mass;
         this.body.updateMassProperties();
@@ -21,6 +25,11 @@ export class ColumbiaLions extends GenericSphere {
 
         super(scene, world, position, radius);
 
+        const loader = new THREE.TextureLoader();
+         loader.load('school_logos/columbia_logo.png', (texture) => {
+             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+         });
+
         // Update the mass
         this.body.mass = mass;
         this.body.updateMassProperties();
@@ -33,6 +42,11 @@ export class CornellBears extends GenericSphere {
         const mass = 2;
 
         super(scene, world, position, radius);
+
+        const loader = new THREE.TextureLoader();
+        loader.load('school_logos/cornell_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
 
         // Update the mass
         this.body.mass = mass;
