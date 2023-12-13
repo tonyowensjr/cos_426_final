@@ -59,6 +59,7 @@ export class BrownBear extends GenericSphere {
         const mass = 2;
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
         loader.load('school_logos/brown_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
@@ -75,6 +76,8 @@ export class DartmouthD extends GenericSphere {
         const mass = 2;
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
+
         loader.load('school_logos/dart_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
@@ -91,6 +94,8 @@ export class UPennQuaker extends GenericSphere {
         const mass = 2;
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
+
         loader.load('school_logos/upenn_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
