@@ -7,6 +7,11 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 
 
 const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// set the background color
+renderer.setClearColor(0x87ceeb);
 
 const controls = new OrbitControls( camera, renderer.domElement );
 renderer.setSize( window.innerWidth, window.innerHeight );

@@ -7,6 +7,10 @@ export class YaleBullDogs extends GenericSphere {
         const mass = 10; // Hardcoded mass
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
+        loader.load('school_logos/yale_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
 
         // Update the mass
         this.body.mass = mass;
@@ -20,6 +24,11 @@ export class ColumbiaLions extends GenericSphere {
         const mass = 7; // Hardcoded mass
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
+         loader.load('school_logos/columbia_logo.png', (texture) => {
+             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+         });
+
 
         // Update the mass
         this.body.mass = mass;
@@ -33,6 +42,58 @@ export class CornellBears extends GenericSphere {
         const mass = 2;
 
         super(scene, world, position, radius);
+        const loader = new THREE.TextureLoader();
+        loader.load('school_logos/cornell_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
+
+        // Update the mass
+        this.body.mass = mass;
+        this.body.updateMassProperties();
+    }
+}
+
+export class BrownBear extends GenericSphere {
+    constructor(scene, world, position) {
+        const radius = 3.3;
+        const mass = 2;
+
+        super(scene, world, position, radius);
+        loader.load('school_logos/brown_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
+
+        // Update the mass
+        this.body.mass = mass;
+        this.body.updateMassProperties();
+    }
+}
+
+export class DartmouthD extends GenericSphere {
+    constructor(scene, world, position) {
+        const radius = 3.3;
+        const mass = 2;
+
+        super(scene, world, position, radius);
+        loader.load('school_logos/dart_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
+
+        // Update the mass
+        this.body.mass = mass;
+        this.body.updateMassProperties();
+    }
+}
+
+export class UPennQuaker extends GenericSphere {
+    constructor(scene, world, position) {
+        const radius = 3.3;
+        const mass = 2;
+
+        super(scene, world, position, radius);
+        loader.load('school_logos/upenn_logo.png', (texture) => {
+            this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+        });
 
         // Update the mass
         this.body.mass = mass;

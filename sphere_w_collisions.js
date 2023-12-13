@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {YaleBullDogs, CornellBears, ColumbiaLions } from './opposingSchools/opposingIvies.js';
+import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
 // important variables
 const shootingBalls = [];
@@ -85,6 +85,11 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// set the background color
+renderer.setClearColor(0x87ceeb);
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
+
 // OrbitControls for camera
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -116,13 +121,28 @@ for (let i = 0; i < numberOfSpheres; i++) {
 
     const position = new THREE.Vector3(xPosition, yPosition, zPosition);
     let rand_num = Math.random() * 100;
-    if (rand_num < 33){
+    if (rand_num < 16){
         const sphere = new YaleBullDogs(scene, world, position);
         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
         sphere.body.position.y = newYposition
         spheres.push(sphere);
-    } else if (rand_num < 66){
+    } else if (rand_num < 33){
         const sphere = new CornellBears(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    } else if (rand_num < 50){
+        const sphere = new BrownBear(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    } else if (rand_num < 66){
+        const sphere = new DartmouthD(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    } else if (rand_num < 83){
+        const sphere = new UPennQuaker(scene, world, position);
         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
         sphere.body.position.y = newYposition
         spheres.push(sphere);
@@ -203,6 +223,12 @@ function createShootingBall(radius, position, material) {
         position: new CANNON.Vec3(position.x, position.y, position.z),
         shape: shape
     });
+
+    const loader = new THREE.TextureLoader();
+    loader.load('school_logos/princeton_logo.jpeg', (texture) => {
+        mesh.material = new THREE.MeshBasicMaterial({ map: texture });
+    });
+
     world.addBody(body);
 
     return { mesh, body };
