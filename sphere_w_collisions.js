@@ -1,32 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-
-class DraggableSphere {
-    constructor(scene, world, position = new THREE.Vector3(), radius = 1) {
-        this.geometry = new THREE.SphereGeometry(radius, 32, 32);
-        this.material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.position.copy(position);
-        scene.add(this.mesh);
-
-        // Cannon.js physics body
-        const shape = new CANNON.Sphere(radius);
-        this.body = new CANNON.Body({
-            mass: 5, // Set mass > 0 for dynamic bodies
-            position: new CANNON.Vec3(position.x, position.y, position.z),
-            shape: shape
-        });
-        world.addBody(this.body);
-    }
-
-    update() {
-        // Update Three.js mesh to match Cannon.js body position
-        this.mesh.position.copy(this.body.position);
-        this.mesh.quaternion.copy(this.body.quaternion);
-    }
-}
+import {YaleBullDogs, CornellBears, ColumbiaLions } from './opposingSchools/opposingIvies.js';
 
 // important variables
 const shootingBalls = [];
@@ -140,8 +115,23 @@ for (let i = 0; i < numberOfSpheres; i++) {
     const zPosition = Math.random() * platformSize -  platformSize/2; // Centered along the z-axis, adjust as needed
 
     const position = new THREE.Vector3(xPosition, yPosition, zPosition);
-    const sphere = new DraggableSphere(scene, world, position);
-    spheres.push(sphere);
+    let rand_num = Math.random() * 100;
+    if (rand_num < 33){
+        const sphere = new YaleBullDogs(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    } else if (rand_num < 66){
+        const sphere = new CornellBears(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    } else {
+        const sphere = new ColumbiaLions(scene, world, position);
+        const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+    }
 }
 
 // Display the number of spheres above the platform at a given time
