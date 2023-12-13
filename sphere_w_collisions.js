@@ -218,6 +218,12 @@ function createShootingBall(radius, position, material) {
     return { mesh, body };
 }
 
+// Example: Loading a texture image
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('/Users/harpreetkaur/Documents/cos_426_final/images/tiger_face.png'); // Replace with your image path
+
+
+
 // Calculate the force to apply to the shooting ball
 function calculatePower(holdDuration) {
     const maxPower = 500; // Maximum power
@@ -234,7 +240,7 @@ function calculatePower(holdDuration) {
 }
 
 // Shoot a ball from the camera
-function shootBallAtTarget(mouseEvent,power) {
+function shootBallAtTarget(mouseEvent,power, texture) {
     if (!isShootMode) return;
 
     const mouse = new THREE.Vector2(
@@ -245,8 +251,10 @@ function shootBallAtTarget(mouseEvent,power) {
     raycaster.setFromCamera(mouse, camera);
 
     // Assuming the shooting ball starts near the camera
-    const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-    const direction = new THREE.Vector3();
+    const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0xffa500 }));
+   // Usage: Pass the texture to the createShootingBall function
+    //const shootingBall = createShootingBall(1, camera.position.clone(), texture);
+   const direction = new THREE.Vector3();
     raycaster.ray.direction.normalize();
     direction.copy(raycaster.ray.direction);
 
