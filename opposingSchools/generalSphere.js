@@ -1,4 +1,4 @@
-import * as THREE from '/node_modules/three';
+import * as THREE from '../node_modules/three';
 import * as CANNON from 'cannon';
 
 export class GenericSphere {
