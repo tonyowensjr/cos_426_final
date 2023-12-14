@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import * as CANNON from 'cannon';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE from '/three';
+import * as CANNON from '/cannon';
+import { OrbitControls } from '/three/addons/controls/OrbitControls.js';
 import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
 // important variables
