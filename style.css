@@ -34,3 +34,11 @@
     color: rgb(0, 0, 0);
     top: 50%;
 }
+
+#popupMenu,
+#gameOverMenu,
+#winnerMenu {
+    color: black; 
+    background-color: #ff8c00; 
+    border: 1px solid black; 
+}
