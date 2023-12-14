@@ -422,3 +422,159 @@ function animate() {
 }
 
 animate();
+
+
+// attempting to change sphere types by level
+
+// document.getElementById('level1').addEventListener('click', function() {
+//     clearSpheres(); // Function to clear existing spheres from the scene
+//     const spheresLevel1 = [
+//         new DartmouthD(scene, world, position),
+//         new UPennQuaker(scene, world, position)
+//     ];
+//     showSpheres(spheresLevel1); // Function to add new spheres to the scene
+// });
+
+// document.getElementById('level2').addEventListener('click', function() {
+//     clearSpheres();
+//     const spheresLevel2 = [
+//         new CornellBears(scene, world, position),
+//         new BrownBear(scene, world, position)
+//     ];
+//     showSpheres(spheresLevel2);
+// });
+
+// document.getElementById('level3').addEventListener('click', function() {
+//     clearSpheres();
+//     const spheresLevel3 = [
+//         new ColumbiaLions(scene, world, position),
+//         new YaleBullDogs(scene, world, position)
+//     ];
+//     showSpheres(spheresLevel3);
+// });
+
+// function clearSpheres() {
+//     // Loop through all spheres and remove them from the scene
+//     spheres.forEach(sphere => {
+//         scene.remove(sphere.mesh); // Remove sphere from the Three.js scene
+//         world.removeBody(sphere.body); // Remove sphere's physics body from Cannon.js world
+//     });
+
+//     // Empty the spheres array
+//     spheres.length = 0;
+// }
+
+// // Function to show spheres based on selected level
+// function showSpheres(level) {
+//     // First, clear any existing spheres on the screen
+//     clearSpheres();
+
+//     // Then, depending on the selected level, create/display spheres accordingly
+//     if (level === 'level1') {
+//         // Show spheres relevant to level 1
+//         // For example:
+//         const sphere1 = new YaleBullDogs(scene, world, new THREE.Vector3(0, 5, 0));
+//         spheres.push(sphere1);
+
+//         const sphere2 = new UPennQuaker(scene, world, new THREE.Vector3(2, 5, 0));
+//         spheres.push(sphere2);
+//     } else if (level === 'level2') {
+//         // Show spheres relevant to level 2
+//         // For example:
+//         const sphere1 = new CornellBears(scene, world, new THREE.Vector3(0, 5, 0));
+//         spheres.push(sphere1);
+
+//         const sphere2 = new BrownBear(scene, world, new THREE.Vector3(2, 5, 0));
+//         spheres.push(sphere2);
+//     } else if (level === 'level3') {
+//         // Show spheres relevant to level 3
+//         // For example:
+//         const sphere1 = new ColumbiaLions(scene, world, new THREE.Vector3(0, 5, 0));
+//         spheres.push(sphere1);
+
+//         const sphere2 = new YaleBullDogs(scene, world, new THREE.Vector3(2, 5, 0));
+//         spheres.push(sphere2);
+//     }
+// }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const level1Button = document.getElementById('level1');
+    const level2Button = document.getElementById('level2');
+    const level3Button = document.getElementById('level3');
+
+    level1Button.addEventListener('click', function() {
+        clearSpheres(); // Function to clear existing spheres from the scene
+        const spheresLevel1 = [
+            new DartmouthD(scene, world, position),
+            new UPennQuaker(scene, world, position)
+        ];
+        showSpheres(spheresLevel1); // Function to add new spheres to the scene
+    });
+
+    level2Button.addEventListener('click', function() {
+        clearSpheres();
+        const spheresLevel2 = [
+            new CornellBears(scene, world, position),
+            new BrownBear(scene, world, position)
+        ];
+        showSpheres(spheresLevel2);
+    });
+
+    level3Button.addEventListener('click', function() {
+        clearSpheres();
+        const spheresLevel3 = [
+            new ColumbiaLions(scene, world, position),
+            new YaleBullDogs(scene, world, position)
+        ];
+        showSpheres(spheresLevel3);
+    });
+
+    
+
+    // Example clearSpheres() and showSpheres() functions
+    function clearSpheres() {
+        // Function to clear spheres
+        // ...
+        spheres.forEach(sphere => {
+                    scene.remove(sphere.mesh); // Remove sphere from the Three.js scene
+                    world.removeBody(sphere.body); // Remove sphere's physics body from Cannon.js world
+                });
+            
+                // Empty the spheres array
+                spheres.length = 0;
+    }
+
+    function showSpheres(spheres) {
+        // Function to show spheres
+        // ...
+        // First, clear any existing spheres on the screen
+        clearSpheres();
+
+        // Then, depending on the selected level, create/display spheres accordingly
+        if (level === 'level1') {
+            // Show spheres relevant to level 1
+            // For example:
+            const sphere1 = new YaleBullDogs(scene, world, new THREE.Vector3(0, 5, 0));
+            spheres.push(sphere1);
+
+            const sphere2 = new UPennQuaker(scene, world, new THREE.Vector3(2, 5, 0));
+            spheres.push(sphere2);
+        } else if (level === 'level2') {
+            // Show spheres relevant to level 2
+            // For example:
+            const sphere1 = new CornellBears(scene, world, new THREE.Vector3(0, 5, 0));
+            spheres.push(sphere1);
+
+            const sphere2 = new BrownBear(scene, world, new THREE.Vector3(2, 5, 0));
+            spheres.push(sphere2);
+        } else if (level === 'level3') {
+            // Show spheres relevant to level 3
+            // For example:
+            const sphere1 = new ColumbiaLions(scene, world, new THREE.Vector3(0, 5, 0));
+            spheres.push(sphere1);
+
+            const sphere2 = new YaleBullDogs(scene, world, new THREE.Vector3(2, 5, 0));
+            spheres.push(sphere2);
+        }
+    }
+});
