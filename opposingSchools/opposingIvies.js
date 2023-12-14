@@ -1,5 +1,5 @@
 // subdir/DerivedClass.js
-import * as THREE from '/three';
+import * as THREE from '/node_modules/three';
 import { GenericSphere } from './generalSphere.js';
 
 export class YaleBullDogs extends GenericSphere {
