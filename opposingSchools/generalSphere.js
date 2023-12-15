@@ -1,5 +1,5 @@
 import * as THREE from '../node_modules/three';
-import * as CANNON from 'cannon';
+// import * as CANNON from 'cannon';
 
 export class GenericSphere {
     constructor(scene, world, position = new THREE.Vector3(), radius = 1) {
