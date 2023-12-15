@@ -105,6 +105,7 @@ renderer.setClearColor(0x87ceeb);
 // OrbitControls for camera
 const controls = new OrbitControls(camera, renderer.domElement);
 
+
 // Cannon.js world setup
 const world = new CANNON.World();
 world.gravity.set(0, -9.82, 0); // Set gravity
@@ -113,83 +114,190 @@ world.solver.iterations = 10;
 
 // Create multiple spheres with physics
 const spheres = [];
-let numberOfSpheres= 4;
+let numberOfSpheres;
 
 // Calculate spacing between spheres
 let platformSize = 20;
 const platformTopSurfaceY = -2;
-let sphereRadius = 1;
-const spacing = platformSize / (numberOfSpheres + 1);
-const additionalClearance = 1;
-const safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
+// Access specific parameter
+// Create URLSearchParams object
+const urlParams = new URLSearchParams(window.location.search);
+const level = urlParams.get('level'); 
+console.log(level);
+let sphereRadius;
+let spacing; 
+let additionalClearance;
+let safeHeightAbovePlatform;
+let position;
+let sphere;
+let newYposition;
 
-let position = new THREE.Vector3(5, safeHeightAbovePlatform, -(platformSize/3));
-let sphere = new BrownBear(scene, world, position);
-let newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-sphere.body.position.y = newYposition
-spheres.push(sphere);
+switch (level) {
+    case "1":
+        sphereRadius = 1;
+        spacing = platformSize / (numberOfSpheres + 1);
+        additionalClearance = 1;
+        safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
 
-
-position = new THREE.Vector3(-(platformSize/4), safeHeightAbovePlatform, platformSize/3);
-sphere = new DartmouthD(scene, world, position);
-newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-sphere.body.position.y = newYposition
-spheres.push(sphere);
-
-position = new THREE.Vector3((platformSize/4), safeHeightAbovePlatform, platformSize/5);
-sphere = new YaleBullDogs(scene, world, position);
-newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-sphere.body.position.y = newYposition
-spheres.push(sphere);
-
-position = new THREE.Vector3((-platformSize/4), safeHeightAbovePlatform, -platformSize/5);
-sphere = new UPennQuaker(scene, world, position);
-newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-sphere.body.position.y = newYposition
-spheres.push(sphere);
+        position = new THREE.Vector3(platformSize/4, safeHeightAbovePlatform, -(platformSize/3));
+        sphere = new BrownBear(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
 
 
-// // Create multiple spheres with physics
-// for (let i = 0; i < numberOfSpheres; i++) {
-//     // Position spheres in a line or grid within the platform bounds
-//     const xPosition = -platformSize / 2 + spacing * (i + 1);
-//     const yPosition = safeHeightAbovePlatform;
-//     const zPosition = Math.random() * platformSize -  platformSize/2; // Centered along the z-axis, adjust as needed
+        position = new THREE.Vector3(-(platformSize/4), safeHeightAbovePlatform, -platformSize/5);
+        sphere = new DartmouthD(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
 
-//     const position = new THREE.Vector3(xPosition, yPosition, zPosition);
-//     let rand_num = Math.random() * 100;
-//     if (rand_num < 16){
-//         const sphere = new YaleBullDogs(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     } else if (rand_num < 33){
-//         const sphere = new CornellBears(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     } else if (rand_num < 50){
-//         const sphere = new BrownBear(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     } else if (rand_num < 66){
-//         const sphere = new DartmouthD(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     } else if (rand_num < 83){
-//         const sphere = new UPennQuaker(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     } else {
-//         const sphere = new ColumbiaLions(scene, world, position);
-//         const newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
-//         sphere.body.position.y = newYposition
-//         spheres.push(sphere);
-//     }
-// }
+
+        position = new THREE.Vector3(-(platformSize/2.1), safeHeightAbovePlatform, platformSize/3);
+        sphere = new DartmouthD(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        position = new THREE.Vector3(platformSize/10, safeHeightAbovePlatform, (platformSize/3));
+        sphere = new BrownBear(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);     
+        
+        position = new THREE.Vector3(platformSize/4.01, safeHeightAbovePlatform, 0);
+        sphere = new DartmouthD(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);   
+        
+        numberOfSpheres = spheres.length;
+        
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+    
+
+
+        break;
+    case "2":
+
+        sphereRadius = 1;
+        spacing = platformSize / (numberOfSpheres + 1);
+        additionalClearance = 1;
+        safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
+
+        position = new THREE.Vector3(platformSize/4, safeHeightAbovePlatform, -(platformSize/3));
+        sphere = new YaleBullDogs(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        position = new THREE.Vector3(-platformSize/3, safeHeightAbovePlatform, -(platformSize/2.5));
+        sphere = new YaleBullDogs(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        position = new THREE.Vector3(-platformSize/4, safeHeightAbovePlatform, -(platformSize/8));
+        sphere = new CornellBears(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+
+        position = new THREE.Vector3(platformSize/4.5, safeHeightAbovePlatform, (platformSize/8));
+        sphere = new CornellBears(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        numberOfSpheres = spheres.length;
+        
+        camera.lookAt(new THREE.Vector3(0,0,1));
+        camera.position.x = -1;
+        camera.position.y = 3;
+        camera.position.z = -35;
+
+        // controls.enabled = true;
+
+
+        break;
+    default:
+        sphereRadius = 1;
+        spacing = platformSize / (numberOfSpheres + 1);
+        additionalClearance = 1;
+        safeHeightAbovePlatform = platformTopSurfaceY + sphereRadius + additionalClearance;
+
+        position = new THREE.Vector3(platformSize/4, safeHeightAbovePlatform, -(platformSize/3));
+        sphere = new ColumbiaLions(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+
+        position = new THREE.Vector3(platformSize/7, safeHeightAbovePlatform, -(platformSize/7));
+        sphere = new ColumbiaLions(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+
+        position = new THREE.Vector3(-platformSize/6, safeHeightAbovePlatform, (platformSize/3));
+        sphere = new ColumbiaLions(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+
+        position = new THREE.Vector3(platformSize/4, safeHeightAbovePlatform, (platformSize/7));
+        sphere = new ColumbiaLions(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+
+
+        position = new THREE.Vector3(-platformSize/4, safeHeightAbovePlatform, -(platformSize/2.3));
+        sphere = new UPennQuaker(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+
+
+        position = new THREE.Vector3(-platformSize/9, safeHeightAbovePlatform, 0);
+        sphere = new UPennQuaker(scene, world, position);
+        newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
+        sphere.body.position.y = newYposition
+        spheres.push(sphere);
+
+        numberOfSpheres = spheres.length;
+
+        camera.lookAt(new THREE.Vector3(-10, 0, 0));
+        camera.position.x = 30
+        camera.position.y = 1
+        camera.position.z =  0
+
+        break;
+}
 
 // Display the number of spheres above the platform at a given time
 const spheresRemaining = document.createElement('div');
@@ -224,7 +332,6 @@ function updateUI(){
 }
 
 // Camera
-camera.position.z = 20;
 
 // Create a platform in Three.js
 const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
@@ -263,7 +370,7 @@ function createShootingBall(radius, position, material) {
     });
 
     const loader = new THREE.TextureLoader();
-    loader.load('school_logos/princeton_logo.jpeg', (texture) => {
+    loader.load('./school_logos/princeton_logo.jpeg', (texture) => {
         mesh.material = new THREE.MeshBasicMaterial({ map: texture });
     });
 
@@ -275,7 +382,6 @@ function createShootingBall(radius, position, material) {
 // Example: Loading a texture image
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load('images/tiger_face.png'); // Replace with your image path
-
 
 
 // Calculate the force to apply to the shooting ball
@@ -419,162 +525,17 @@ function animate() {
         }, 4000);
 
     }
+
+    function getCameraDirection(camera) {
+        var vector = new THREE.Vector3(0, 0, -1);
+        vector.applyQuaternion(camera.quaternion);
+    
+        return vector;
+    }
+    
+    var cameraDirection = getCameraDirection(camera);
+    console.log('Camera is looking towards:', cameraDirection,camera.position);
 }
 
 animate();
 
-
-// attempting to change sphere types by level
-
-// document.getElementById('level1').addEventListener('click', function() {
-//     clearSpheres(); // Function to clear existing spheres from the scene
-//     const spheresLevel1 = [
-//         new DartmouthD(scene, world, position),
-//         new UPennQuaker(scene, world, position)
-//     ];
-//     showSpheres(spheresLevel1); // Function to add new spheres to the scene
-// });
-
-// document.getElementById('level2').addEventListener('click', function() {
-//     clearSpheres();
-//     const spheresLevel2 = [
-//         new CornellBears(scene, world, position),
-//         new BrownBear(scene, world, position)
-//     ];
-//     showSpheres(spheresLevel2);
-// });
-
-// document.getElementById('level3').addEventListener('click', function() {
-//     clearSpheres();
-//     const spheresLevel3 = [
-//         new ColumbiaLions(scene, world, position),
-//         new YaleBullDogs(scene, world, position)
-//     ];
-//     showSpheres(spheresLevel3);
-// });
-
-// function clearSpheres() {
-//     // Loop through all spheres and remove them from the scene
-//     spheres.forEach(sphere => {
-//         scene.remove(sphere.mesh); // Remove sphere from the Three.js scene
-//         world.removeBody(sphere.body); // Remove sphere's physics body from Cannon.js world
-//     });
-
-//     // Empty the spheres array
-//     spheres.length = 0;
-// }
-
-// // Function to show spheres based on selected level
-// function showSpheres(level) {
-//     // First, clear any existing spheres on the screen
-//     clearSpheres();
-
-//     // Then, depending on the selected level, create/display spheres accordingly
-//     if (level === 'level1') {
-//         // Show spheres relevant to level 1
-//         // For example:
-//         const sphere1 = new YaleBullDogs(scene, world, new THREE.Vector3(0, 5, 0));
-//         spheres.push(sphere1);
-
-//         const sphere2 = new UPennQuaker(scene, world, new THREE.Vector3(2, 5, 0));
-//         spheres.push(sphere2);
-//     } else if (level === 'level2') {
-//         // Show spheres relevant to level 2
-//         // For example:
-//         const sphere1 = new CornellBears(scene, world, new THREE.Vector3(0, 5, 0));
-//         spheres.push(sphere1);
-
-//         const sphere2 = new BrownBear(scene, world, new THREE.Vector3(2, 5, 0));
-//         spheres.push(sphere2);
-//     } else if (level === 'level3') {
-//         // Show spheres relevant to level 3
-//         // For example:
-//         const sphere1 = new ColumbiaLions(scene, world, new THREE.Vector3(0, 5, 0));
-//         spheres.push(sphere1);
-
-//         const sphere2 = new YaleBullDogs(scene, world, new THREE.Vector3(2, 5, 0));
-//         spheres.push(sphere2);
-//     }
-// }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const level1Button = document.getElementById('level1');
-    const level2Button = document.getElementById('level2');
-    const level3Button = document.getElementById('level3');
-
-    level1Button.addEventListener('click', function() {
-        clearSpheres(); // Function to clear existing spheres from the scene
-        const spheresLevel1 = [
-            new DartmouthD(scene, world, position),
-            new UPennQuaker(scene, world, position)
-        ];
-        showSpheres(spheresLevel1); // Function to add new spheres to the scene
-    });
-
-    level2Button.addEventListener('click', function() {
-        clearSpheres();
-        const spheresLevel2 = [
-            new CornellBears(scene, world, position),
-            new BrownBear(scene, world, position)
-        ];
-        showSpheres(spheresLevel2);
-    });
-
-    level3Button.addEventListener('click', function() {
-        clearSpheres();
-        const spheresLevel3 = [
-            new ColumbiaLions(scene, world, position),
-            new YaleBullDogs(scene, world, position)
-        ];
-        showSpheres(spheresLevel3);
-    });
-
-    
-
-    // Example clearSpheres() and showSpheres() functions
-    function clearSpheres() {
-        // Function to clear spheres
-        // ...
-        spheres.forEach(sphere => {
-                    scene.remove(sphere.mesh); // Remove sphere from the Three.js scene
-                    world.removeBody(sphere.body); // Remove sphere's physics body from Cannon.js world
-                });
-            
-                // Empty the spheres array
-                spheres.length = 0;
-    }
-
-    function showSpheres(spheres) {
-        // Function to show spheres
-        // ...
-        // First, clear any existing spheres on the screen
-        clearSpheres();
-
-        // Then, depending on the selected level, create/display spheres accordingly
-        if (level === 'level1') {
-            // Show spheres relevant to level 1
-            // For example:
-            const sphere1 = new YaleBullDogs(scene, world, new THREE.Vector3(0, 5, 0));
-            spheres.push(sphere1);
-
-            const sphere2 = new UPennQuaker(scene, world, new THREE.Vector3(2, 5, 0));
-            spheres.push(sphere2);
-        } else if (level === 'level2') {
-            // Show spheres relevant to level 2
-            // For example:
-            const sphere1 = new CornellBears(scene, world, new THREE.Vector3(0, 5, 0));
-            spheres.push(sphere1);
-
-            const sphere2 = new BrownBear(scene, world, new THREE.Vector3(2, 5, 0));
-            spheres.push(sphere2);
-        } else if (level === 'level3') {
-            // Show spheres relevant to level 3
-            // For example:
-            const sphere1 = new ColumbiaLions(scene, world, new THREE.Vector3(0, 5, 0));
-            spheres.push(sphere1);
-
-            const sphere2 = new YaleBullDogs(scene, world, new THREE.Vector3(2, 5, 0));
-            spheres.push(sphere2);
-        }
-    }
-});
