@@ -213,6 +213,28 @@ switch (level) {
         sphere.body.position.y = newYposition
         spheres.push(sphere);
 
+       
+        let newYaleSphere3Pos = new THREE.Vector3(-platformSize / 2.8, safeHeightAbovePlatform, platformSize / 4.5);
+        let newYaleSphere4Pos = new THREE.Vector3(platformSize / 2.2, safeHeightAbovePlatform, -platformSize / 6);
+        let newYaleSphere5Pos = new THREE.Vector3(-platformSize / 4, safeHeightAbovePlatform, platformSize / 6);
+        let newYaleSphere1Pos = new THREE.Vector3(platformSize / 2.5, safeHeightAbovePlatform, platformSize / 4);
+        let newYaleSphere2Pos = new THREE.Vector3(-platformSize / 2.2, safeHeightAbovePlatform, -platformSize / 5);
+
+        sphere = new YaleBullDogs(scene, world, newYaleSphere1Pos);
+        spheres.push(sphere);
+
+        sphere = new YaleBullDogs(scene, world, newYaleSphere2Pos);
+        spheres.push(sphere);
+
+        sphere = new YaleBullDogs(scene, world, newYaleSphere3Pos);
+        spheres.push(sphere);
+
+        sphere = new YaleBullDogs(scene, world, newYaleSphere4Pos);
+        spheres.push(sphere);
+
+        sphere = new YaleBullDogs(scene, world, newYaleSphere5Pos);
+        spheres.push(sphere);
+
         numberOfSpheres = spheres.length;
         
         camera.lookAt(new THREE.Vector3(0,0,1));
@@ -295,6 +317,7 @@ switch (level) {
         camera.position.x = 30
         camera.position.y = 1
         camera.position.z =  0
+        
 
         break;
 }
@@ -331,12 +354,27 @@ function updateUI(){
 
 }
 
-// Camera
+const textureLoader1 = new THREE.TextureLoader();
+const platformTexture = textureLoader1.load('school_logos/princeton_surface.png');
+
+// Create a platform material using the texture for the top face
+const platformMaterials = [
+    new THREE.MeshBasicMaterial({color: 0xFF8F00 }), // Side faces material
+    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), // Side faces material
+    new THREE.MeshBasicMaterial({ map: platformTexture  }), // Side faces material
+    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }), // Side faces material
+    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), // Top face material with texture
+    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }) // Bottom face material
+];
+
+
 
 // Create a platform in Three.js
+// const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
+// const platformMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 });
 const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
-const platformMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 });
-const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
+const platformMesh = new THREE.Mesh(platformGeometry, platformMaterials);
+//const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
 platformMesh.position.set(0, platformTopSurfaceY, 0);
 scene.add(platformMesh);
 
@@ -379,9 +417,8 @@ function createShootingBall(radius, position, material) {
     return { mesh, body };
 }
 
-// Example: Loading a texture image
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('images/tiger_face.png'); // Replace with your image path
+const texture = textureLoader.load('images/tiger_face.png'); 
 
 
 // Calculate the force to apply to the shooting ball
@@ -413,7 +450,6 @@ function shootBallAtTarget(mouseEvent, power, texture) {
 
     // Assuming the shooting ball starts near the camera
     const shootingBall = createShootingBall(1, camera.position.clone(), new THREE.MeshBasicMaterial({ color: 0xffa500 }));
-    // Usage: Pass the texture to the createShootingBall function
     //const shootingBall = createShootingBall(1, camera.position.clone(), texture);
     const direction = new THREE.Vector3();
     raycaster.ray.direction.normalize();
