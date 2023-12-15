@@ -1,4 +1,5 @@
 import { OrbitControls } from './OrbitControls.js';
+// import * as THREE from '/node_modules/three';
 import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
 // important variables
