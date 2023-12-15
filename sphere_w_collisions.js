@@ -178,7 +178,7 @@ switch (level) {
         camera.position.y = 1
         camera.position.z =  0
     
-        controls.enabled = false;
+        // controls.enabled = false;
 
         break;
     case "2":
@@ -242,8 +242,7 @@ switch (level) {
         camera.position.y = 3;
         camera.position.z = -35;
 
-        // controls.enabled = true;
-        controls.enabled = false;
+        // controls.enabled = false;
 
 
         break;
@@ -318,7 +317,9 @@ switch (level) {
         camera.position.x = 30
         camera.position.y = 1
         camera.position.z =  0
-        controls.enabled = false;
+
+
+        // controls.enabled = false;
 
 
         break;
