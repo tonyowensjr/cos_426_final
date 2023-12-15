@@ -1,7 +1,4 @@
-import * as THREE from './node_modules/three';
-// import * as CANNON from 'cannon';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import { OrbitControls } from "https://unpkg.com/three@0.112/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from './OrbitControls.js';
 import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
 // important variables
@@ -105,7 +102,6 @@ renderer.setClearColor(0x87ceeb);
 
 // OrbitControls for camera
 const controls = new OrbitControls(camera, renderer.domElement);
-
 
 // Cannon.js world setup
 const world = new CANNON.World();
@@ -383,10 +379,10 @@ function updateUI(){
 }
 
 const textureLoader1 = new THREE.TextureLoader();
-const platformTexture = textureLoader1.load('school_logos/princeton_surface.png');
+const platformTexture = textureLoader1.load('./school_logos/princeton_surface.png');
 
 const textureLoader2 = new THREE.TextureLoader();
-const platformTexture2 = textureLoader1.load('school_logos/back.png');
+const platformTexture2 = textureLoader1.load('./school_logos/back.png');
 
 // Create a platform material using the texture for the top face
 const platformMaterials = [
@@ -449,7 +445,7 @@ function createShootingBall(radius, position, material) {
 }
 
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('images/tiger_face.png'); 
+const texture = textureLoader.load('./images/tiger_face.png'); 
 
 
 // Calculate the force to apply to the shooting ball
@@ -552,7 +548,7 @@ function updateCamera() {
     camera.updateMatrixWorld(); // Important if the camera's position or rotation has changed
 }
 
-const cloudTexture = new THREE.TextureLoader().load('school_logos/cloud2.png');
+const cloudTexture = new THREE.TextureLoader().load('./school_logos/cloud2.png');
 const cloudMaterial = new THREE.SpriteMaterial({ map: cloudTexture });
 
 const cloudCount = 4; // Number of clouds
