@@ -385,14 +385,17 @@ function updateUI(){
 const textureLoader1 = new THREE.TextureLoader();
 const platformTexture = textureLoader1.load('school_logos/princeton_surface.png');
 
+const textureLoader2 = new THREE.TextureLoader();
+const platformTexture2 = textureLoader1.load('school_logos/back.png');
+
 // Create a platform material using the texture for the top face
 const platformMaterials = [
     new THREE.MeshBasicMaterial({color: 0xFF8F00 }), 
     new THREE.MeshBasicMaterial({color: 0xFF8F00  }), 
     new THREE.MeshBasicMaterial({ map: platformTexture  }), 
-    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }), 
+    new THREE.MeshBasicMaterial({ map: platformTexture2 }), 
     new THREE.MeshBasicMaterial({color: 0xFF8F00  }), 
-    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }) 
+    new THREE.MeshBasicMaterial({color: 0xFF8F00   }) 
 ];
 
 
