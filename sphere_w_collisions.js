@@ -1,6 +1,7 @@
 import * as THREE from './node_modules/three';
 // import * as CANNON from 'cannon';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from "https://unpkg.com/three@0.112/examples/jsm/controls/OrbitControls.js";
 import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
 // important variables
@@ -325,6 +326,29 @@ switch (level) {
         break;
 }
 
+function positionCamera(level){
+    switch(level){
+        case "1":
+            camera.lookAt(new THREE.Vector3(-10, 0, 0));
+            camera.position.x = 30
+            camera.position.y = 1
+            camera.position.z =  0
+            break;
+        case "2":
+            camera.lookAt(new THREE.Vector3(0,0,1));
+            camera.position.x = -1;
+            camera.position.y = 3;
+            camera.position.z = -35;
+            break;
+        default: 
+            camera.lookAt(new THREE.Vector3(-10, 0, 0));
+            camera.position.x = 30
+            camera.position.y = 1
+            camera.position.z =  0
+            break;
+    }
+}
+
 // Display the number of spheres above the platform at a given time
 const spheresRemaining = document.createElement('div');
 spheresRemaining.id = 'spheresRemaining';
@@ -471,6 +495,7 @@ window.addEventListener('keydown', (event) => {
     if (event.key === 'L' || event.key === 'l') {
         isShootMode = !isShootMode;
         viewMode.textContent = `View Mode: ${viewerModeDict[isShootMode]}`;
+        positionCamera(level)
     }
 });
 
@@ -620,8 +645,8 @@ function animate() {
         return vector;
     }
     
-    var cameraDirection = getCameraDirection(camera);
-    console.log('Camera is looking towards:', cameraDirection,camera.position);
+    // var cameraDirection = getCameraDirection(camera);
+    // console.log('Camera is looking towards:', cameraDirection,camera.position);
 
     updateCloudsOrientation(); 
     renderer.render(scene, camera);
