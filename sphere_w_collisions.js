@@ -22,8 +22,8 @@ timeDisplay.style.top = '75px';
 timeDisplay.style.right = '10px';
 timeDisplay.style.color = 'black';
 timeDisplay.style.zIndex = '10';
-timeDisplay.style.fontSize = '48px';
-timeDisplay.style.fontFamily = 'sans-serif';
+timeDisplay.style.fontSize = '28px';
+timeDisplay.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(timeDisplay);
 
 // Time Display
@@ -35,8 +35,8 @@ scoreDisplay.style.top = '10px';
 scoreDisplay.style.left = '10px';
 scoreDisplay.style.color = 'black';
 scoreDisplay.style.zIndex = '10';
-scoreDisplay.style.fontSize = '48px';
-scoreDisplay.style.fontFamily = 'sans-serif';
+scoreDisplay.style.fontSize = '28px';
+scoreDisplay.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(scoreDisplay);
 
 // Stars Display
@@ -48,8 +48,8 @@ starsDisplay.style.top = '75px';
 starsDisplay.style.left = '10px';
 starsDisplay.style.color = 'black';
 starsDisplay.style.zIndex = '10';
-starsDisplay.style.fontSize = '48px';
-starsDisplay.style.fontFamily = 'sans-serif';
+starsDisplay.style.fontSize = '28px';
+starsDisplay.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(starsDisplay);
 
 // View Mode Display
@@ -61,8 +61,8 @@ viewMode.style.top = '140px';
 viewMode.style.left = '10px';
 viewMode.style.color = 'black';
 viewMode.style.zIndex = '10';
-viewMode.style.fontSize = '48px';
-viewMode.style.fontFamily = 'sans-serif';
+viewMode.style.fontSize = '28px';
+viewMode.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(viewMode);
 
 const livesDisplay = document.createElement('div');
@@ -73,8 +73,8 @@ livesDisplay.style.top = '205px';
 livesDisplay.style.left = '10px';
 livesDisplay.style.color = 'black';
 livesDisplay.style.zIndex = '10';
-livesDisplay.style.fontSize = '48px';
-livesDisplay.style.fontFamily = 'sans-serif';
+livesDisplay.style.fontSize = '28px';
+livesDisplay.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(livesDisplay);
 
 // Power Display
@@ -86,8 +86,8 @@ powerDisplay.style.top = '140px';
 powerDisplay.style.right = '10px';
 powerDisplay.style.color = 'black';
 powerDisplay.style.zIndex = '10';
-powerDisplay.style.fontSize = '48px';
-powerDisplay.style.fontFamily = 'sans-serif';
+powerDisplay.style.fontSize = '28px';
+powerDisplay.style.fontFamily = "'Press Start 2P', sans-serif";
 document.body.appendChild(powerDisplay);
 
 // Scene, Camera, Renderer
@@ -330,7 +330,7 @@ spheresRemaining.style.top = '10px';
 spheresRemaining.style.right = '10px';
 spheresRemaining.style.color = 'black';
 spheresRemaining.style.zIndex = '10';
-spheresRemaining.style.fontSize = '48px';
+spheresRemaining.style.fontSize = '28px';
 spheresRemaining.style.fontFamily = 'sans-serif';
 document.body.appendChild(spheresRemaining);
  
@@ -343,7 +343,8 @@ function updateUI(){
     timeDisplay.textContent = 'Time: ' + elapsedTime + 's';
 
     const enemiesLeft = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length;
-    spheresRemaining.textContent = `Enemies Remaining: ${enemiesLeft}`;    
+    spheresRemaining.textContent = `Enemies Remaining: ${enemiesLeft}`;
+    spheresRemaining.style.fontFamily = "'Press Start 2P', sans-serif";    
 
     const n_score = 500 * (numberOfSpheres-enemiesLeft);
     scoreDisplay.textContent = `Score: ${n_score}`;
@@ -359,12 +360,12 @@ const platformTexture = textureLoader1.load('school_logos/princeton_surface.png'
 
 // Create a platform material using the texture for the top face
 const platformMaterials = [
-    new THREE.MeshBasicMaterial({color: 0xFF8F00 }), // Side faces material
-    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), // Side faces material
-    new THREE.MeshBasicMaterial({ map: platformTexture  }), // Side faces material
-    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }), // Side faces material
-    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), // Top face material with texture
-    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }) // Bottom face material
+    new THREE.MeshBasicMaterial({color: 0xFF8F00 }), 
+    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), 
+    new THREE.MeshBasicMaterial({ map: platformTexture  }), 
+    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }), 
+    new THREE.MeshBasicMaterial({color: 0xFF8F00  }), 
+    new THREE.MeshBasicMaterial({ color: 0xFF8F00 }) 
 ];
 
 
@@ -520,6 +521,51 @@ function updateCamera() {
     camera.updateMatrixWorld(); // Important if the camera's position or rotation has changed
 }
 
+const cloudTexture = new THREE.TextureLoader().load('school_logos/cloud2.png');
+const cloudMaterial = new THREE.SpriteMaterial({ map: cloudTexture });
+
+const cloudCount = 4; // Number of clouds
+
+for (let i = 0; i < cloudCount; i++) {
+    // Create a sprite with the cloud material
+    const cloudSprite = new THREE.Sprite(cloudMaterial);
+
+    // Set the scale of the sprite
+    const cloudScale = 10; // Adjust the scale of the cloud
+    cloudSprite.scale.set(cloudScale, cloudScale, 1);
+
+    // Calculate positions for the clouds
+    const radius = 30; 
+    const angle = (i / cloudCount) * Math.PI * 2;
+    const cloudX = radius * Math.cos(angle);
+    const cloudY = 20; 
+    const cloudZ = radius * Math.sin(angle);
+
+    // Position the cloud sprite
+    cloudSprite.position.set(cloudX, cloudY, cloudZ);
+
+    // Add the cloud sprite to the scene
+    scene.add(cloudSprite);
+}
+
+// Update function to make the clouds face the camera
+function updateCloudsOrientation() {
+    scene.traverse((child) => {
+        if (child instanceof THREE.Sprite) {
+            const cloudPosition = child.position.clone();
+            const cameraPosition = camera.position.clone();
+
+            const lookAtMatrix = new THREE.Matrix4();
+            lookAtMatrix.lookAt(cameraPosition, cloudPosition, camera.up);
+
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromRotationMatrix(lookAtMatrix);
+
+            child.quaternion.copy(quaternion);
+        }
+    });
+}
+
 
 // Animation Loop
 function animate() {
@@ -546,7 +592,8 @@ function animate() {
     updateCamera();
     let remainingFoes = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length
     if (remainingFoes == 0){
-        setTimeout(function(){document.getElementById('winnerMenu').style.display = 'block';}, 1000);
+        setTimeout(function(){document.getElementById('winnerMenu').style.display = 'block';winnerMenu.style.fontFamily = "'Press Start 2P', sans-serif";}, 1000);
+
     }
 
     // this checks if lives are over and waits for 4 seconds before displaying the game over menu
@@ -556,9 +603,10 @@ function animate() {
         setTimeout(function(){
             remainingFoes = spheres.filter(sphere=>sphere.body.position.y>platformBody.position.y).length
             if (remainingFoes > 0) {
-                document.getElementById('gameOverMenu').style.display = 'block';
+                document.getElementById('gameOverMenu').style.display = 'block';gameOverMenu.style.fontFamily = "'Press Start 2P', sans-serif";
             } 
         }, 4000);
+        
 
     }
 
@@ -571,7 +619,25 @@ function animate() {
     
     var cameraDirection = getCameraDirection(camera);
     console.log('Camera is looking towards:', cameraDirection,camera.position);
+
+    updateCloudsOrientation(); 
+    renderer.render(scene, camera);
 }
 
 animate();
+
+
+// // Create a cloud shape (SphereGeometry used as an example)
+// const cloudGeometry = new THREE.SphereGeometry(5, 32, 32); // Adjust parameters as needed
+// const cloudTexture = new THREE.TextureLoader().load('school_logos/cloud.png'); // Load cloud image texture
+// const cloudMaterial = new THREE.MeshBasicMaterial({ map: cloudTexture, side: THREE.DoubleSide });
+// const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+
+// // Position and add the cloud mesh to the scene
+// cloudMesh.position.set(0, 10, 0); // Adjust position as needed
+// scene.add(cloudMesh);
+
+
+
+
 
