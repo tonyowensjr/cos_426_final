@@ -1,6 +1,6 @@
 import * as THREE from './node_modules/three';
 // import * as CANNON from 'cannon';
-// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // import { OrbitControls } from "https://unpkg.com/three@0.112/examples/jsm/controls/OrbitControls.js";
 import {YaleBullDogs, CornellBears, ColumbiaLions, BrownBear, DartmouthD, UPennQuaker } from './opposingSchools/opposingIvies.js';
 
@@ -104,7 +104,7 @@ renderer.setClearColor(0x87ceeb);
 // document.body.appendChild(renderer.domElement);
 
 // OrbitControls for camera
-// const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 
 
 // Cannon.js world setup
