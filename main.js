@@ -100,11 +100,12 @@ document.body.appendChild(renderer.domElement);
 
 // set the background color
 renderer.setClearColor(0x87ceeb);
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// document.body.appendChild(renderer.domElement);
 
 // OrbitControls for camera
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false;
+controls.enablePan = false;
+controls.enabled = false;
 
 // Cannon.js world setup
 const world = new CANNON.World();
@@ -131,6 +132,22 @@ let safeHeightAbovePlatform;
 let position;
 let sphere;
 let newYposition;
+function calculateStars(knockedOverBalls, totalBalls) {
+    const ratio = knockedOverBalls / totalBalls;
+    let stars = 0;
+
+    if (ratio > 0) {
+        if (ratio <= 0.45) {
+            stars = 1; // 1 star for knocking over up to 33% of the balls
+        } else if (ratio < 1) {
+            stars = 2; // 2 stars for knocking over more than 33% but up to 66%
+        } else {
+            stars = 3; // 3 stars for knocking over more than 66%
+        }
+    }
+
+    return stars;
+}
 
 switch (level) {
     case "1":
@@ -177,8 +194,6 @@ switch (level) {
         camera.position.x = 30
         camera.position.y = 1
         camera.position.z =  0
-    
-        // controls.enabled = false;
 
         break;
     case "2":
@@ -242,9 +257,6 @@ switch (level) {
         camera.position.y = 3;
         camera.position.z = -35;
 
-        // controls.enabled = false;
-
-
         break;
     default:
         sphereRadius = 1;
@@ -292,7 +304,6 @@ switch (level) {
         camera.position.y = 1
         camera.position.z =  0
 
-
         position = new THREE.Vector3(-platformSize/4, safeHeightAbovePlatform, -(platformSize/2.3));
         sphere = new UPennQuaker(scene, world, position);
         newYposition = platformTopSurfaceY + sphere.geometry.parameters.radius + additionalClearance;
@@ -303,7 +314,6 @@ switch (level) {
         camera.position.x = 30
         camera.position.y = 1
         camera.position.z =  0
-
 
         position = new THREE.Vector3(-platformSize/9, safeHeightAbovePlatform, 0);
         sphere = new UPennQuaker(scene, world, position);
@@ -317,33 +327,22 @@ switch (level) {
         camera.position.x = 30
         camera.position.y = 1
         camera.position.z =  0
-
-
-        // controls.enabled = false;
-
-
         break;
 }
 
 function positionCamera(level){
     switch(level){
         case "1":
+            camera.position.set(30, 1, 0);
             camera.lookAt(new THREE.Vector3(-10, 0, 0));
-            camera.position.x = 30
-            camera.position.y = 1
-            camera.position.z =  0
             break;
         case "2":
+            camera.position.set(-1, 3, -35);
             camera.lookAt(new THREE.Vector3(0,0,1));
-            camera.position.x = -1;
-            camera.position.y = 3;
-            camera.position.z = -35;
             break;
         default: 
+            camera.position.set(30, 1, 0);
             camera.lookAt(new THREE.Vector3(-10, 0, 0));
-            camera.position.x = 30
-            camera.position.y = 1
-            camera.position.z =  0
             break;
     }
 }
@@ -374,18 +373,17 @@ function updateUI(){
 
     const n_score = 500 * (numberOfSpheres-enemiesLeft);
     scoreDisplay.textContent = `Score: ${n_score}`;
-
-    starsDisplay.textContent = `Stars: ${"★".repeat(numberOfSpheres - enemiesLeft)}`;
+    starsDisplay.textContent = `Stars: ${"★".repeat(calculateStars(numberOfSpheres-enemiesLeft,numberOfSpheres))}`;
 
     livesDisplay.textContent = `Tigers: ${lives}`;
 
 }
 
 const textureLoader1 = new THREE.TextureLoader();
-const platformTexture = textureLoader1.load('./princeton_surface.png');
+const platformTexture = textureLoader1.load('./school_logos/princeton_surface.png');
 
 const textureLoader2 = new THREE.TextureLoader();
-const platformTexture2 = textureLoader1.load('./back.png');
+const platformTexture2 = textureLoader1.load('./school_logos/back.png');
 
 // Create a platform material using the texture for the top face
 const platformMaterials = [
@@ -400,11 +398,8 @@ const platformMaterials = [
 
 
 // Create a platform in Three.js
-// const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
-// const platformMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 });
 const platformGeometry = new THREE.BoxGeometry(platformSize, 1, platformSize);
 const platformMesh = new THREE.Mesh(platformGeometry, platformMaterials);
-//const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
 platformMesh.position.set(0, platformTopSurfaceY, 0);
 scene.add(platformMesh);
 
@@ -438,7 +433,7 @@ function createShootingBall(radius, position, material) {
     });
 
     const loader = new THREE.TextureLoader();
-    loader.load('./princeton_logo.jpeg', (texture) => {
+    loader.load('./school_logos/princeton_logo.jpeg', (texture) => {
         mesh.material = new THREE.MeshBasicMaterial({ map: texture });
     });
 
@@ -448,7 +443,7 @@ function createShootingBall(radius, position, material) {
 }
 
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('./tiger_back.png'); 
+const texture = textureLoader.load('./images/tiger_back.png'); 
 
 
 // Calculate the force to apply to the shooting ball
@@ -498,6 +493,9 @@ window.addEventListener('keydown', (event) => {
         isShootMode = !isShootMode;
         viewMode.textContent = `View Mode: ${viewerModeDict[isShootMode]}`;
         positionCamera(level)
+        controls.enableZoom = !controls.enableZoom;
+        controls.enablePan = !controls.enablePan;
+        controls.enabled = !controls.enabled;
     }
 });
 
@@ -551,7 +549,7 @@ function updateCamera() {
     camera.updateMatrixWorld(); // Important if the camera's position or rotation has changed
 }
 
-const cloudTexture = new THREE.TextureLoader().load('./cloud2.png');
+const cloudTexture = new THREE.TextureLoader().load('./school_logos/cloud2.png');
 const cloudMaterial = new THREE.SpriteMaterial({ map: cloudTexture });
 
 const cloudCount = 4; // Number of clouds
@@ -596,7 +594,6 @@ function updateCloudsOrientation() {
     });
 }
 
-
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
@@ -636,37 +633,13 @@ function animate() {
                 document.getElementById('gameOverMenu').style.display = 'block';gameOverMenu.style.fontFamily = "'Press Start 2P', sans-serif";
             } 
         }, 4000);
-        
-
     }
-
-    function getCameraDirection(camera) {
-        var vector = new THREE.Vector3(0, 0, -1);
-        vector.applyQuaternion(camera.quaternion);
-    
-        return vector;
-    }
-    
-    // var cameraDirection = getCameraDirection(camera);
-    // console.log('Camera is looking towards:', cameraDirection,camera.position);
 
     updateCloudsOrientation(); 
     renderer.render(scene, camera);
 }
 
 animate();
-
-
-// // Create a cloud shape (SphereGeometry used as an example)
-// const cloudGeometry = new THREE.SphereGeometry(5, 32, 32); // Adjust parameters as needed
-// const cloudTexture = new THREE.TextureLoader().load('school_logos/cloud.png'); // Load cloud image texture
-// const cloudMaterial = new THREE.MeshBasicMaterial({ map: cloudTexture, side: THREE.DoubleSide });
-// const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
-
-// // Position and add the cloud mesh to the scene
-// cloudMesh.position.set(0, 10, 0); // Adjust position as needed
-// scene.add(cloudMesh);
-
 
 
 
