@@ -7,7 +7,7 @@ export default defineConfig({
     {    "predeploy" : "npm run build",
     "deploy" : "gh-pages -d dist",
     "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
     }
 
 });

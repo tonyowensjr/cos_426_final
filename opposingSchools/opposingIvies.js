@@ -10,7 +10,7 @@ export class YaleBullDogs extends GenericSphere {
 
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
-        loader.load('school_logos/yale_logo.png', (texture) => {
+        loader.load('./yale_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
 
@@ -27,7 +27,7 @@ export class ColumbiaLions extends GenericSphere {
 
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
-         loader.load('school_logos/columbia_logo.png', (texture) => {
+         loader.load('./columbia_logo.png', (texture) => {
              this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
          });
 
@@ -45,7 +45,7 @@ export class CornellBears extends GenericSphere {
 
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
-        loader.load('school_logos/cornell_logo.png', (texture) => {
+        loader.load('./cornell_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
 
@@ -62,7 +62,7 @@ export class BrownBear extends GenericSphere {
 
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
-        loader.load('school_logos/brown_logo.png', (texture) => {
+        loader.load('./brown_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
 
@@ -80,7 +80,7 @@ export class DartmouthD extends GenericSphere {
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
 
-        loader.load('school_logos/dart_logo.png', (texture) => {
+        loader.load('./dart_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
 
@@ -98,7 +98,7 @@ export class UPennQuaker extends GenericSphere {
         super(scene, world, position, radius);
         const loader = new THREE.TextureLoader();
 
-        loader.load('school_logos/upenn_logo.png', (texture) => {
+        loader.load('./upenn_logo.png', (texture) => {
             this.mesh.material = new THREE.MeshBasicMaterial({ map: texture });
         });
 

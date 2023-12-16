@@ -382,10 +382,10 @@ function updateUI(){
 }
 
 const textureLoader1 = new THREE.TextureLoader();
-const platformTexture = textureLoader1.load('school_logos/princeton_surface.png');
+const platformTexture = textureLoader1.load('./princeton_surface.png');
 
 const textureLoader2 = new THREE.TextureLoader();
-const platformTexture2 = textureLoader1.load('school_logos/back.png');
+const platformTexture2 = textureLoader1.load('./back.png');
 
 // Create a platform material using the texture for the top face
 const platformMaterials = [
@@ -438,7 +438,7 @@ function createShootingBall(radius, position, material) {
     });
 
     const loader = new THREE.TextureLoader();
-    loader.load('school_logos/princeton_logo.jpeg', (texture) => {
+    loader.load('./princeton_logo.jpeg', (texture) => {
         mesh.material = new THREE.MeshBasicMaterial({ map: texture });
     });
 
@@ -448,7 +448,7 @@ function createShootingBall(radius, position, material) {
 }
 
 const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('images/tiger_face.png'); 
+const texture = textureLoader.load('./tiger_back.png'); 
 
 
 // Calculate the force to apply to the shooting ball
@@ -551,7 +551,7 @@ function updateCamera() {
     camera.updateMatrixWorld(); // Important if the camera's position or rotation has changed
 }
 
-const cloudTexture = new THREE.TextureLoader().load('school_logos/cloud2.png');
+const cloudTexture = new THREE.TextureLoader().load('./cloud2.png');
 const cloudMaterial = new THREE.SpriteMaterial({ map: cloudTexture });
 
 const cloudCount = 4; // Number of clouds
