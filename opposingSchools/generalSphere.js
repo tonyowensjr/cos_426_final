@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es'
-// import * as CANNON from 'cannon';
-
 export class GenericSphere {
     constructor(scene, world, position = new THREE.Vector3(), radius = 1) {
         // Three.js mesh
